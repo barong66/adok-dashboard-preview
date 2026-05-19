@@ -550,12 +550,88 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
-    #wsTable th:nth-child(1), #wsTable td:nth-child(1) { width: 34%; }  /* Website / Spot name */
-    #wsTable th:nth-child(2), #wsTable td:nth-child(2) { width: 13%; }  /* Total imp.        */
-    #wsTable th:nth-child(3), #wsTable td:nth-child(3) { width: 14%; }  /* Revenue $         */
-    #wsTable th:nth-child(4), #wsTable td:nth-child(4) { width: 11%; }  /* eCPM              */
-    #wsTable th:nth-child(5), #wsTable td:nth-child(5) { width: 12%; }  /* Δ%                */
-    #wsTable th:nth-child(6), #wsTable td:nth-child(6) { width: 16%; }  /* Trend             */
+    #wsTable th:nth-child(1), #wsTable td:nth-child(1) { width: 40%; }  /* Website / Spot name */
+    #wsTable th:nth-child(2), #wsTable td:nth-child(2) { width: 15%; }  /* Total imp.        */
+    #wsTable th:nth-child(3), #wsTable td:nth-child(3) { width: 16%; }  /* Revenue $         */
+    #wsTable th:nth-child(4), #wsTable td:nth-child(4) { width: 13%; }  /* eCPM              */
+    #wsTable th:nth-child(5), #wsTable td:nth-child(5) { width: 16%; }  /* Δ%                */
+
+    /* ---------- Websites / Spots header controls ---------- */
+    .ws-head-controls {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .btn-ghost {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-2);
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: background 0.15s, border-color 0.15s, color 0.15s;
+    }
+    .btn-ghost:hover {
+      background: #f5f7fa;
+      border-color: var(--text-3);
+      color: var(--text);
+    }
+    .ws-filter-row {
+      padding: 0 20px 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .filter-label {
+      font-size: 12px;
+      color: var(--text-3);
+      font-weight: 500;
+      letter-spacing: 0.2px;
+    }
+    .chips-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip-toggle {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #f5f5f5;
+      color: var(--text-2);
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 5px 11px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+    }
+    .chip-toggle:hover { background: #ebeef5; }
+    .chip-toggle.active {
+      background: #e7f5dc;
+      color: #4f8b1f;
+      border-color: var(--success);
+    }
+    .chip-toggle .fmt-dot {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+    }
+    .filter-clear {
+      background: transparent;
+      border: none;
+      color: var(--primary);
+      font-size: 12px;
+      cursor: pointer;
+      padding: 4px 8px;
+      border-radius: 4px;
+    }
+    .filter-clear:hover { background: #ecf5ff; }
 
     /* ---------- Two-column row ---------- */
     .two-col {
@@ -860,11 +936,27 @@
           </div>
         </section>
 
-        <!-- ===== 4. Revenue by Websites / Spots (NEW per #118) — full width ===== -->
+        <!-- ===== 4. Revenue by Websites / Spots — full width ===== -->
         <section class="card">
           <div class="section-head">
-            <h2>Revenue by Websites / Spots<span class="new-flag">NEW</span><i class="info-i" data-tip="Which of your websites brings how much money.&#10;Click a website to expand into its spots.&#10;Headline metric: Revenue ($)." data-tip-pos="bottom">i</i></h2>
-            <span class="sub">Last 7 days · click website to expand spots</span>
+            <h2>Revenue by Websites / Spots<i class="info-i" data-tip="Which of your websites brings how much money.&#10;Click a website to expand into its spots.&#10;Use the filter to narrow down by ad format." data-tip-pos="bottom">i</i></h2>
+            <div class="ws-head-controls">
+              <button class="btn-ghost" id="wsExpandAll" data-tip="Open or close every website at once" data-tip-pos="bottom">Expand all</button>
+            </div>
+          </div>
+          <div class="ws-filter-row">
+            <span class="filter-label">Filter by format:</span>
+            <div class="chips-row" id="wsFormatFilter">
+              <button class="chip-toggle" data-fmt="popunder" data-tip="Show only Popunder spots"      data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-popunder)"></span>Popunder</button>
+              <button class="chip-toggle" data-fmt="banner"   data-tip="Show only Banner spots"        data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-banner)"></span>Banner</button>
+              <button class="chip-toggle" data-fmt="invideo"  data-tip="Show only In-Video spots"      data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-invideo)"></span>In-Video</button>
+              <button class="chip-toggle" data-fmt="slider"   data-tip="Show only Slider spots"        data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-slider)"></span>Slider</button>
+              <button class="chip-toggle" data-fmt="ipp"      data-tip="Show only In-Page Push spots"  data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-ipp)"></span>In-Page Push</button>
+              <button class="chip-toggle" data-fmt="inter"    data-tip="Show only Interstitial spots"  data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-inter)"></span>Interstitial</button>
+              <button class="chip-toggle" data-fmt="out"      data-tip="Show only OutStream spots"     data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-out)"></span>OutStream</button>
+              <button class="chip-toggle" data-fmt="direct"   data-tip="Show only Direct Link spots"   data-tip-pos="bottom"><span class="fmt-dot" style="background:var(--c-direct)"></span>Direct Link</button>
+            </div>
+            <button class="filter-clear" id="wsFilterClear" hidden data-tip="Clear all format filters" data-tip-pos="bottom">Clear</button>
           </div>
           <table class="el-table" id="wsTable">
             <thead>
@@ -874,7 +966,6 @@
                 <th class="num headline sorted" data-key="revenue" data-tip="Revenue earned from this website over the last 7 days">Revenue <span class="unit">$</span> <span class="sort">↓</span></th>
                 <th class="num" data-key="ecpm" data-tip="Effective CPM — revenue per 1,000 impressions">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
                 <th class="num" data-key="delta" data-tip="Revenue change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
-                <th data-tip="Daily revenue over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
               </tr>
             </thead>
             <tbody id="wsBody"></tbody>
@@ -884,7 +975,7 @@
         <!-- ===== 5. Revenue by Traffic Sources (NEW per #118) — full width ===== -->
         <section class="card">
           <div class="section-head">
-            <h2>Revenue by Traffic Sources<span class="new-flag">NEW</span><i class="info-i" data-tip="Where your traffic comes from.&#10;Headline metric: eCPM (efficiency).&#10;Volume metrics: Total, UV, PPV." data-tip-pos="bottom">i</i></h2>
+            <h2>Revenue by Traffic Sources<i class="info-i" data-tip="Where your traffic comes from.&#10;Headline metric: eCPM (efficiency).&#10;Volume metrics: Total, UV, PPV." data-tip-pos="bottom">i</i></h2>
             <span class="sub">Last 7 days · headline = eCPM</span>
           </div>
           <table class="el-table" id="tsTable">
@@ -991,54 +1082,68 @@
       { name: "Direct / Other", total:  28910, uv: 22440, ppv: 1.4, ecpm: 0.61, delta: -15.2, ecpmHist: [0.72,0.70,0.68,0.66,0.64,0.62,0.61] },
     ];
 
-    /* Websites — 7d roll-up. revHist = 7 daily revenue points.
-       Each website expands to its spots (sub-rows). */
+    /* Websites — 7d roll-up. Each website expands to its spots.
+       Spot has a `format` key so the table can be filtered by ad format
+       and website-level aggregates (Total / Revenue / eCPM / Δ%) get
+       recomputed from the matching spots only. */
     const websites = [
       {
-        name: "some.porn", total: 152400, revenue: 168.40, ecpm: 1.10, delta: +6.8,
-        revHist: [148,152,158,160,164,166,168],
+        name: "some.porn",
         spots: [
-          { name: "spot-2841 · main-popunder",   total: 78200, revenue: 92.50, ecpm: 1.18, delta:  +9.1, revHist: [80,82,85,88,90,91,92] },
-          { name: "spot-2842 · video-preroll",   total: 41500, revenue: 48.20, ecpm: 1.16, delta:  +5.4, revHist: [44,45,46,47,47,48,48] },
-          { name: "spot-2843 · sidebar-banner",  total: 32700, revenue: 27.70, ecpm: 0.85, delta:  -1.2, revHist: [28,28,28,28,28,28,28] },
+          { name: "spot-2841 · main-popunder",   format: "popunder", total: 78200, revenue: 92.50, ecpm: 1.18, delta:  +9.1 },
+          { name: "spot-2842 · video-preroll",   format: "invideo",  total: 41500, revenue: 48.20, ecpm: 1.16, delta:  +5.4 },
+          { name: "spot-2843 · sidebar-banner",  format: "banner",   total: 32700, revenue: 27.70, ecpm: 0.85, delta:  -1.2 },
         ],
       },
       {
-        name: "eporner-mirror.com", total: 121780, revenue: 134.20, ecpm: 1.10, delta: -4.1,
-        revHist: [142,140,139,138,136,135,134],
+        name: "eporner-mirror.com",
         spots: [
-          { name: "spot-3110 · popunder",        total: 70200, revenue: 80.40, ecpm: 1.15, delta: -3.2, revHist: [84,83,82,81,81,80,80] },
-          { name: "spot-3111 · in-page push",    total: 51580, revenue: 53.80, ecpm: 1.04, delta: -5.6, revHist: [58,57,56,55,55,54,54] },
+          { name: "spot-3110 · popunder",        format: "popunder", total: 70200, revenue: 80.40, ecpm: 1.15, delta: -3.2 },
+          { name: "spot-3111 · in-page push",    format: "ipp",      total: 51580, revenue: 53.80, ecpm: 1.04, delta: -5.6 },
         ],
       },
       {
-        name: "tubemax.example", total: 98650, revenue: 82.15, ecpm: 0.83, delta: +9.4,
-        revHist: [72,74,76,78,80,81,82],
+        name: "tubemax.example",
         spots: [
-          { name: "spot-4001 · popunder",        total: 60100, revenue: 55.20, ecpm: 0.92, delta: +12.8, revHist: [48,50,52,53,54,55,55] },
-          { name: "spot-4002 · interstitial",    total: 22300, revenue: 17.80, ecpm: 0.80, delta:  +6.2, revHist: [16,16,17,17,17,18,18] },
-          { name: "spot-4003 · banner",          total: 16250, revenue:  9.15, ecpm: 0.56, delta:  +2.1, revHist: [9,9,9,9,9,9,9.1] },
+          { name: "spot-4001 · popunder",        format: "popunder", total: 60100, revenue: 55.20, ecpm: 0.92, delta: +12.8 },
+          { name: "spot-4002 · interstitial",    format: "inter",    total: 22300, revenue: 17.80, ecpm: 0.80, delta:  +6.2 },
+          { name: "spot-4003 · banner",          format: "banner",   total: 16250, revenue:  9.15, ecpm: 0.56, delta:  +2.1 },
         ],
       },
       {
-        name: "xclips.example", total: 72310, revenue: 58.90, ecpm: 0.81, delta: -1.2,
-        revHist: [60,60,59,59,59,59,58.9],
+        name: "xclips.example",
         spots: [
-          { name: "spot-5202 · popunder",        total: 48100, revenue: 40.20, ecpm: 0.84, delta:  -0.8, revHist: [41,41,40,40,40,40,40] },
-          { name: "spot-5203 · slider",          total: 24210, revenue: 18.70, ecpm: 0.77, delta:  -2.0, revHist: [19,19,19,19,19,19,19] },
+          { name: "spot-5202 · popunder",        format: "popunder", total: 48100, revenue: 40.20, ecpm: 0.84, delta: -0.8 },
+          { name: "spot-5203 · slider",          format: "slider",   total: 24210, revenue: 18.70, ecpm: 0.77, delta: -2.0 },
         ],
       },
       {
-        name: "hubcdn.example", total: 41220, revenue: 29.74, ecpm: 0.72, delta: -18.5,
-        revHist: [36,35,34,33,32,30,29.7],
+        name: "hubcdn.example",
         spots: [
-          { name: "spot-6011 · popunder",        total: 27800, revenue: 20.30, ecpm: 0.73, delta: -19.4, revHist: [25,24,23,22,22,21,20] },
-          { name: "spot-6012 · in-page push",    total: 13420, revenue:  9.44, ecpm: 0.70, delta: -16.4, revHist: [11,11,11,10,10,9.5,9.4] },
+          { name: "spot-6011 · popunder",        format: "popunder", total: 27800, revenue: 20.30, ecpm: 0.73, delta: -19.4 },
+          { name: "spot-6012 · in-page push",    format: "ipp",      total: 13420, revenue:  9.44, ecpm: 0.70, delta: -16.4 },
         ],
       },
     ];
-    /* expanded state by website name */
+
+    /* Aggregate parent-website row from the spot rows that match the active filter */
+    function aggregateWebsite(w, filterSet) {
+      const spots = filterSet.size === 0 ? w.spots : w.spots.filter(s => filterSet.has(s.format));
+      if (spots.length === 0) return null;
+      const total = spots.reduce((a, s) => a + s.total, 0);
+      const revenue = spots.reduce((a, s) => a + s.revenue, 0);
+      const ecpm = total > 0 ? (revenue / total) * 1000 : 0;
+      const deltaNum = spots.reduce((a, s) => a + s.revenue * s.delta, 0);
+      const delta = revenue > 0 ? deltaNum / revenue : 0;
+      return { name: w.name, spots, total, revenue, ecpm, delta };
+    }
+
+    /* expanded state by website name + active format filter (multi-select) */
     const wsExpanded = new Set();
+    const wsFilter   = new Set();
+    function getFilteredWebsites() {
+      return websites.map(w => aggregateWebsite(w, wsFilter)).filter(Boolean);
+    }
 
     /* Alerts — example issues to show alerts strip */
     const alerts = [
@@ -1527,7 +1632,7 @@
       </tr>`;
     }
 
-    /* Websites table — parent rows are expandable into per-spot rows */
+    /* Websites table — parent rows expandable into per-spot rows */
     function rowWS(r) {
       const isOpen = wsExpanded.has(r.name);
       const parent = `<tr class="parent-row ${isOpen ? "expanded" : ""}" data-ws="${r.name}">
@@ -1536,7 +1641,6 @@
         <td class="num headline">${usd(r.revenue)}</td>
         <td class="num">${usd(r.ecpm)}</td>
         <td class="num">${deltaPill(r.delta)}</td>
-        <td class="trend" data-tip="${trendTip(r.revHist, true)}">${sparkline(r.revHist, 80, 24)}</td>
       </tr>`;
       if (!isOpen) return parent;
       const children = (r.spots || []).map(s => `<tr class="child-row">
@@ -1545,7 +1649,6 @@
         <td class="num">${usd(s.revenue)}</td>
         <td class="num">${usd(s.ecpm)}</td>
         <td class="num">${deltaPill(s.delta)}</td>
-        <td class="trend" data-tip="${trendTip(s.revHist, true)}">${sparkline(s.revHist, 80, 24)}</td>
       </tr>`).join("");
       return parent + children;
     }
@@ -1561,18 +1664,60 @@
     applyView();
     byDateSortable = makeSortable("byDateTable", getByDateForCurrentMetric, rowByDate, "total", "desc");
     makeSortable("tsTable", trafficSources, rowTS, "total", "desc");
-    const wsSortable = makeSortable("wsTable", websites, rowWS, "revenue", "desc");
+    const wsSortable = makeSortable("wsTable", getFilteredWebsites, rowWS, "revenue", "desc");
 
-    /* Expand/collapse websites → spots */
+    /* Expand/collapse single website → spots */
     document.getElementById("wsTable").addEventListener("click", e => {
       const parent = e.target.closest("tr.parent-row");
       if (!parent) return;
-      // Only the name cell triggers expand (so sorting via header is unaffected)
       const nameCell = e.target.closest("td.name");
       if (!nameCell) return;
       const ws = parent.dataset.ws;
       if (wsExpanded.has(ws)) wsExpanded.delete(ws); else wsExpanded.add(ws);
       wsSortable.refresh();
+      updateExpandAllLabel();
+    });
+
+    /* Expand all / Collapse all */
+    function updateExpandAllLabel() {
+      const visible = getFilteredWebsites();
+      const allOpen = visible.length > 0 && visible.every(w => wsExpanded.has(w.name));
+      document.getElementById("wsExpandAll").textContent = allOpen ? "Collapse all" : "Expand all";
+    }
+    document.getElementById("wsExpandAll").addEventListener("click", () => {
+      const visible = getFilteredWebsites();
+      const allOpen = visible.length > 0 && visible.every(w => wsExpanded.has(w.name));
+      if (allOpen) {
+        visible.forEach(w => wsExpanded.delete(w.name));
+      } else {
+        visible.forEach(w => wsExpanded.add(w.name));
+      }
+      wsSortable.refresh();
+      updateExpandAllLabel();
+    });
+    updateExpandAllLabel();
+
+    /* Format filter chips (multi-select) */
+    function updateFilterClearVisibility() {
+      const clear = document.getElementById("wsFilterClear");
+      if (wsFilter.size === 0) clear.setAttribute("hidden", ""); else clear.removeAttribute("hidden");
+    }
+    document.querySelectorAll("#wsFormatFilter .chip-toggle").forEach(b => {
+      b.addEventListener("click", () => {
+        const f = b.dataset.fmt;
+        if (wsFilter.has(f)) wsFilter.delete(f); else wsFilter.add(f);
+        b.classList.toggle("active", wsFilter.has(f));
+        wsSortable.refresh();
+        updateExpandAllLabel();
+        updateFilterClearVisibility();
+      });
+    });
+    document.getElementById("wsFilterClear").addEventListener("click", () => {
+      wsFilter.clear();
+      document.querySelectorAll("#wsFormatFilter .chip-toggle").forEach(b => b.classList.remove("active"));
+      wsSortable.refresh();
+      updateExpandAllLabel();
+      updateFilterClearVisibility();
     });
 
     /* Redraw chart on resize */
