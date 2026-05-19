@@ -785,15 +785,15 @@
             <thead>
               <tr>
                 <th data-key="date" data-tip="Calendar day (UTC) · click to sort">Date <span class="unit">UTC</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="banner"  data-tip="Banner ads revenue for the day"><span class="fmt-dot" style="background:var(--c-banner)"></span>Banner <span class="unit">$</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="pop"     data-tip="Popunder ads revenue for the day"><span class="fmt-dot" style="background:var(--c-popunder)"></span>Popunder <span class="unit">$</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="invideo" data-tip="In-video ads revenue for the day"><span class="fmt-dot" style="background:var(--c-invideo)"></span>In-Video <span class="unit">$</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="slider"  data-tip="Slider ads revenue for the day"><span class="fmt-dot" style="background:var(--c-slider)"></span>Slider <span class="unit">$</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="inter"   data-tip="Interstitial ads revenue for the day"><span class="fmt-dot" style="background:var(--c-inter)"></span>Interstitial <span class="unit">$</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="ipp"     data-tip="In-page push ads revenue for the day"><span class="fmt-dot" style="background:var(--c-ipp)"></span>In-Page Push <span class="unit">$</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="out"     data-tip="OutStream ads revenue for the day"><span class="fmt-dot" style="background:var(--c-out)"></span>Outstream <span class="unit">$</span> <span class="sort">↕</span></th>
-                <th class="num headline sorted" data-key="total" data-tip="Sum across all ad formats for the day">Total <span class="unit">$</span> <span class="sort">↓</span></th>
-                <th class="num" data-key="dod" data-tip="Day-over-day change of Total vs the previous calendar day">Δ DoD <span class="unit">%</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="banner"  data-tip="Banner ads revenue for the day, USD"><span class="fmt-dot" style="background:var(--c-banner)"></span>Banner <span class="sort">↕</span></th>
+                <th class="num" data-key="pop"     data-tip="Popunder ads revenue for the day, USD"><span class="fmt-dot" style="background:var(--c-popunder)"></span>Popunder <span class="sort">↕</span></th>
+                <th class="num" data-key="invideo" data-tip="In-video ads revenue for the day, USD"><span class="fmt-dot" style="background:var(--c-invideo)"></span>In-Video <span class="sort">↕</span></th>
+                <th class="num" data-key="slider"  data-tip="Slider ads revenue for the day, USD"><span class="fmt-dot" style="background:var(--c-slider)"></span>Slider <span class="sort">↕</span></th>
+                <th class="num" data-key="inter"   data-tip="Interstitial ads revenue for the day, USD"><span class="fmt-dot" style="background:var(--c-inter)"></span>Interstitial <span class="sort">↕</span></th>
+                <th class="num" data-key="ipp"     data-tip="In-page push ads revenue for the day, USD"><span class="fmt-dot" style="background:var(--c-ipp)"></span>In-Page Push <span class="sort">↕</span></th>
+                <th class="num" data-key="out"     data-tip="OutStream ads revenue for the day, USD"><span class="fmt-dot" style="background:var(--c-out)"></span>Outstream <span class="sort">↕</span></th>
+                <th class="num headline sorted" data-key="total" data-tip="Sum across all ad formats for the day, USD">Total <span class="sort">↓</span></th>
+                <th class="num" data-key="dod" data-tip="Day-over-day change of Total vs the previous calendar day">Δ DoD <span class="sort">↕</span></th>
               </tr>
             </thead>
             <tbody id="byDateBody"></tbody>
@@ -905,7 +905,7 @@
         label: "Today's income",
         value: 142.22,
         delta: 5.2,
-        context: "vs same weekday avg $135.10",
+        context: "vs yesterday at this time $135.19",
         spark: [110,115,108,120,118,125,130,128,135,138,140,142],
       },
       {
@@ -1029,7 +1029,7 @@
        INCOME HEADER — 4 cards
     ============================================================= */
     const incomeTips = {
-      "Today's income":         "Income accrued so far today (UTC).\nBaseline: average of the same weekday\nover the last 4 weeks.",
+      "Today's income":         "Income earned so far today (UTC).\nBaseline: yesterday's income at the\nsame time of day.",
       "Yesterday's income":     "Total income earned yesterday (UTC).\nBaseline: the day before yesterday.",
       "This month's income":    "Income for the current calendar month.\nBaseline: same number of days into\nthe previous month.",
       "Last 30 days' income":   "Rolling 30-day income (today − 30 days).\nBaseline: the 30 days before that window.",
