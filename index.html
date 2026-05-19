@@ -844,34 +844,6 @@
           </section>
         </div>
 
-        <!-- ===== 6. Top movers ===== -->
-        <section class="card">
-          <div class="section-head">
-            <h2>Top movers<span class="new-flag">NEW</span><i class="info-i" data-tip="What grew and what dropped the most.&#10;Items with negligible absolute change are hidden to&#10;reduce noise (e.g., +200% on a $0.02 row)." data-tip-pos="bottom">i</i></h2>
-            <div style="display:flex; gap:8px;">
-              <div class="seg" id="moversDim">
-                <button data-dim="website" class="active" data-tip="Group movers by website"        data-tip-pos="bottom">Website</button>
-                <button data-dim="source"                 data-tip="Group movers by traffic source" data-tip-pos="bottom">Traffic source</button>
-                <button data-dim="format"                 data-tip="Group movers by ad format"      data-tip-pos="bottom">Format</button>
-              </div>
-              <div class="seg" id="moversPeriod">
-                <button data-mp="day"  class="active" data-tip="Compare today vs yesterday"           data-tip-pos="bottom">vs Yesterday</button>
-                <button data-mp="week"                data-tip="Compare last 7 days vs previous 7 days" data-tip-pos="bottom">vs Last week</button>
-              </div>
-            </div>
-          </div>
-          <div class="movers-grid">
-            <div class="movers-col growers">
-              <h3>▲ Top growers</h3>
-              <div id="growersList"></div>
-            </div>
-            <div class="movers-col decliners">
-              <h3>▼ Top decliners</h3>
-              <div id="declinersList"></div>
-            </div>
-          </div>
-        </section>
-
         <p class="devnote">
           Preview · cockpit redesign on top of <a href="https://gitlab.as12as.com/asg/support/-/work_items/118" target="_blank" rel="noopener">support#118</a> · sample data only
         </p>
@@ -1394,69 +1366,6 @@
     }
 
     /* =============================================================
-       TOP MOVERS
-    ============================================================= */
-    const moversState = { dim: "website", period: "day" };
-
-    /* Build "movers" data from existing tables. For per-period scaling, scale delta. */
-    function moversData() {
-      const periodScale = moversState.period === "day" ? 0.4 : 1.0; // shrink delta for daily
-      const baseTotal = moversState.dim === "format" ? 100 : 1;
-      const pickFmt = () => FORMATS.slice(0, 7).map(f => ({
-        name: f.label,
-        abs: (Math.random() * 80 + 5),
-        delta: (Math.random() - 0.45) * 60 * periodScale,
-      }));
-      let src;
-      if (moversState.dim === "website") {
-        src = websites.map(w => ({ name: w.name, abs: Math.abs(w.revenue * w.delta / 100), delta: w.delta * periodScale }));
-      } else if (moversState.dim === "source") {
-        src = trafficSources.map(s => ({ name: s.name, abs: Math.abs(s.ecpm * 100 * s.delta / 100), delta: s.delta * periodScale }));
-      } else {
-        src = pickFmt();
-      }
-      /* filter noise: skip items with very small absolute change */
-      src = src.filter(x => Math.abs(x.abs) >= 1);
-      const growers = src.filter(x => x.delta > 0).sort((a, b) => b.delta - a.delta).slice(0, 3);
-      const decliners = src.filter(x => x.delta < 0).sort((a, b) => a.delta - b.delta).slice(0, 3);
-      return { growers, decliners };
-    }
-    function renderMovers() {
-      const { growers, decliners } = moversData();
-      const renderList = (arr, dir) => arr.length === 0
-        ? `<div style="color:var(--text-3); font-size:13px; padding: 8px 0;">No items</div>`
-        : arr.map(x => {
-            const absStr = (dir === "up" ? "+" : "−") + usd(Math.abs(x.abs)).replace("$", "$");
-            const tip = `${x.name}\nAbsolute change: ${absStr}\nRelative: ${pct(x.delta)}`;
-            return `<div class="mover-row ${dir}" data-tip="${tip}" data-tip-pos="bottom">
-              <div class="name">${x.name}</div>
-              <div class="d-abs">${absStr}</div>
-              <div class="d-pct">${deltaPill(x.delta).replace("delta-pill", "delta-pill")}</div>
-            </div>`;
-          }).join("");
-      document.getElementById("growersList").innerHTML = renderList(growers, "up");
-      document.getElementById("declinersList").innerHTML = renderList(decliners, "down");
-    }
-    function wireMovers() {
-      document.querySelectorAll("#moversDim button").forEach(b => {
-        b.addEventListener("click", () => {
-          document.querySelectorAll("#moversDim button").forEach(x => x.classList.remove("active"));
-          b.classList.add("active");
-          moversState.dim = b.dataset.dim;
-          renderMovers();
-        });
-      });
-      document.querySelectorAll("#moversPeriod button").forEach(b => {
-        b.addEventListener("click", () => {
-          document.querySelectorAll("#moversPeriod button").forEach(x => x.classList.remove("active"));
-          b.classList.add("active");
-          moversState.period = b.dataset.mp;
-          renderMovers();
-        });
-      });
-    }
-
-    /* =============================================================
        BOOT
     ============================================================= */
     renderAlerts();
@@ -1467,8 +1376,6 @@
     makeSortable("byDateTable", byDate, rowByDate, "total", "desc");
     makeSortable("tsTable",     trafficSources, rowTS, "total", "desc");
     makeSortable("wsTable",     websites, rowWS, "revenue", "desc");
-    renderMovers();
-    wireMovers();
 
     /* Redraw chart on resize */
     let resizeT;
