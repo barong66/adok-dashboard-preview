@@ -494,19 +494,21 @@
       align-items: center;
       padding: 10px 0;
       border-bottom: 1px dashed #f0f2f5;
+      cursor: default;
     }
     .mover-row:last-child { border-bottom: none; }
     .mover-row .name { font-weight: 500; }
-    .mover-row .d-abs { color: var(--text-2); font-size: 13px; font-variant-numeric: tabular-nums; }
-    .mover-row .d-pct {
-      font-weight: 600;
+    .mover-row .d-abs {
+      color: var(--text-2);
       font-size: 13px;
       font-variant-numeric: tabular-nums;
-      min-width: 56px;
-      text-align: right;
     }
-    .mover-row.up .d-pct { color: var(--success); }
-    .mover-row.down .d-pct { color: var(--danger); }
+    .mover-row .d-pct {
+      min-width: 76px;
+      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+    }
 
     /* ---------- Dev footer ---------- */
     .devnote {
@@ -517,8 +519,127 @@
     }
     .devnote a { color: var(--text-3); text-decoration: underline; }
 
-    /* Income hover tooltip — native title is fine but we want richer */
-    .income-card { cursor: default; }
+    /* ---------- Custom tooltip system (data-tip) ---------- */
+    [data-tip] { position: relative; }
+    [data-tip]:hover::after {
+      content: attr(data-tip);
+      position: absolute;
+      bottom: calc(100% + 8px);
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(48, 49, 51, 0.96);
+      color: #fff;
+      padding: 7px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 1.45;
+      font-weight: 400;
+      letter-spacing: 0.1px;
+      text-transform: none;
+      white-space: pre-line;
+      max-width: 280px;
+      width: max-content;
+      z-index: 100;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.18);
+      pointer-events: none;
+    }
+    [data-tip]:hover::before {
+      content: "";
+      position: absolute;
+      bottom: calc(100% + 3px);
+      left: 50%;
+      transform: translateX(-50%);
+      border: 5px solid transparent;
+      border-top-color: rgba(48, 49, 51, 0.96);
+      z-index: 100;
+      pointer-events: none;
+    }
+    /* Bottom-positioned tooltip variant */
+    [data-tip-pos="bottom"]:hover::after {
+      bottom: auto;
+      top: calc(100% + 8px);
+    }
+    [data-tip-pos="bottom"]:hover::before {
+      bottom: auto;
+      top: calc(100% + 3px);
+      border-top-color: transparent;
+      border-bottom-color: rgba(48, 49, 51, 0.96);
+    }
+
+    /* ---------- Info "ⓘ" affordance ---------- */
+    .info-i {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 13px;
+      height: 13px;
+      border-radius: 50%;
+      background: var(--text-3);
+      color: #fff;
+      font-size: 9px;
+      font-weight: 700;
+      line-height: 1;
+      margin-left: 4px;
+      cursor: help;
+      vertical-align: middle;
+      font-style: normal;
+    }
+    .info-i:hover { background: var(--text-2); }
+
+    /* ---------- Δ% pill cells ---------- */
+    .delta-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 3px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-size: 12px;
+      font-weight: 600;
+      line-height: 1.3;
+      font-variant-numeric: tabular-nums;
+    }
+    .delta-pill.up   { background: #e7f5dc; color: #4f8b1f; }
+    .delta-pill.down { background: #fde6e6; color: #b53939; }
+    .delta-pill.flat { background: #f0f1f3; color: var(--text-2); }
+    .delta-pill .arrow { font-size: 10px; }
+
+    /* ---------- Format dot in table headers ---------- */
+    th .fmt-dot {
+      display: inline-block;
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      vertical-align: middle;
+      margin-right: 5px;
+    }
+    /* Emphasize headline columns */
+    th.headline, td.headline {
+      background: #fcfcfd;
+    }
+    td.headline {
+      font-weight: 600;
+      color: var(--text);
+    }
+    /* Unit annotations under column titles */
+    th .unit {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--text-3);
+      letter-spacing: 0.3px;
+      text-transform: none;
+      margin-top: 1px;
+    }
+    th { vertical-align: top; }
+    th .sort {
+      margin-left: 4px;
+    }
+    /* Cursor for column tips */
+    th[data-tip] { cursor: help; }
+
+    /* ---------- Sparkline cells get a slightly wider feel ---------- */
+    td.trend { padding-right: 14px; padding-left: 14px; }
+    td.trend .sparkline { display: block; margin: 0 auto; }
 
     /* Custom scrollbar polish (optional) */
     ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -593,16 +714,16 @@
         <section class="card">
           <div class="chart-toolbar">
             <div class="seg" id="metricTabs">
-              <button data-metric="revenue" class="active">Revenue&nbsp;$</button>
-              <button data-metric="impressions">Impressions</button>
-              <button data-metric="requests">Requests</button>
-              <button data-metric="ecpm">eCPM</button>
+              <button data-metric="revenue"     class="active" data-tip="Sum of revenue in USD across all formats and sources" data-tip-pos="bottom">Revenue&nbsp;$</button>
+              <button data-metric="impressions"                data-tip="Number of ad impressions shown to visitors"           data-tip-pos="bottom">Impressions</button>
+              <button data-metric="requests"                   data-tip="Number of ad requests sent to networks (some return empty)" data-tip-pos="bottom">Requests</button>
+              <button data-metric="ecpm"                       data-tip="Effective CPM — average revenue per 1,000 impressions" data-tip-pos="bottom">eCPM</button>
             </div>
             <div class="seg" id="periodTabs">
-              <button data-period="24h" class="active">24h</button>
-              <button data-period="7d">7d</button>
-              <button data-period="30d">30d</button>
-              <button data-period="custom">Custom</button>
+              <button data-period="24h"    class="active" data-tip="Last 24 hours · hourly granularity"   data-tip-pos="bottom">24h</button>
+              <button data-period="7d"                    data-tip="Last 7 days · daily granularity"       data-tip-pos="bottom">7d</button>
+              <button data-period="30d"                   data-tip="Last 30 days · daily granularity"      data-tip-pos="bottom">30d</button>
+              <button data-period="custom"                data-tip="Pick a date range — opens a calendar"  data-tip-pos="bottom">Custom</button>
             </div>
           </div>
           <div class="chart-wrap" id="chartWrap">
@@ -615,22 +736,22 @@
         <!-- ===== 3. Revenue by date/format (kept per #118) + Δ column ===== -->
         <section class="card">
           <div class="section-head">
-            <h2>Revenue by date/format</h2>
-            <span class="sub">Last 14 days</span>
+            <h2>Revenue by date/format<i class="info-i" data-tip="Daily revenue broken down by ad format.&#10;Hover any column header for that format's definition." data-tip-pos="bottom">i</i></h2>
+            <span class="sub">Last 10 days · click headers to sort</span>
           </div>
           <table class="el-table" id="byDateTable">
             <thead>
               <tr>
-                <th data-key="date">Date <span class="sort">↕</span></th>
-                <th class="num" data-key="banner">Banner <span class="sort">↕</span></th>
-                <th class="num" data-key="pop">Popunder <span class="sort">↕</span></th>
-                <th class="num" data-key="invideo">In-Video <span class="sort">↕</span></th>
-                <th class="num" data-key="slider">Slider <span class="sort">↕</span></th>
-                <th class="num" data-key="inter">Interstitial <span class="sort">↕</span></th>
-                <th class="num" data-key="ipp">In-Page Push <span class="sort">↕</span></th>
-                <th class="num" data-key="out">Outstream <span class="sort">↕</span></th>
-                <th class="num sorted" data-key="total">Total <span class="sort">↓</span></th>
-                <th class="num" data-key="dod">vs Prev <span class="sort">↕</span></th>
+                <th data-key="date" data-tip="Calendar day (UTC) · click to sort">Date<span class="unit">UTC</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="banner"  data-tip="Banner ads revenue for the day"><span class="fmt-dot" style="background:var(--c-banner)"></span>Banner<span class="unit">USD</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="pop"     data-tip="Popunder ads revenue for the day"><span class="fmt-dot" style="background:var(--c-popunder)"></span>Popunder<span class="unit">USD</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="invideo" data-tip="In-video ads revenue for the day"><span class="fmt-dot" style="background:var(--c-invideo)"></span>In-Video<span class="unit">USD</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="slider"  data-tip="Slider ads revenue for the day"><span class="fmt-dot" style="background:var(--c-slider)"></span>Slider<span class="unit">USD</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="inter"   data-tip="Interstitial ads revenue for the day"><span class="fmt-dot" style="background:var(--c-inter)"></span>Interstitial<span class="unit">USD</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="ipp"     data-tip="In-page push ads revenue for the day"><span class="fmt-dot" style="background:var(--c-ipp)"></span>In-Page Push<span class="unit">USD</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="out"     data-tip="OutStream ads revenue for the day"><span class="fmt-dot" style="background:var(--c-out)"></span>Outstream<span class="unit">USD</span> <span class="sort">↕</span></th>
+                <th class="num headline sorted" data-key="total" data-tip="Sum across all ad formats for the day">Total<span class="unit">USD</span> <span class="sort">↓</span></th>
+                <th class="num" data-key="dod" data-tip="Day-over-day change of Total vs the previous calendar day">vs Prev<span class="unit">Δ% DoD</span> <span class="sort">↕</span></th>
               </tr>
             </thead>
             <tbody id="byDateBody"></tbody>
@@ -641,19 +762,19 @@
         <div class="two-col">
           <section class="card">
             <div class="section-head">
-              <h2>Revenue by Traffic Sources<span class="new-flag">NEW</span></h2>
-              <span class="sub">Last 7 days · sortable</span>
+              <h2>Revenue by Traffic Sources<span class="new-flag">NEW</span><i class="info-i" data-tip="Where your traffic comes from.&#10;Headline metric: eCPM (efficiency).&#10;Volume metrics: Total, UV, PPV." data-tip-pos="bottom">i</i></h2>
+              <span class="sub">Last 7 days · headline = eCPM</span>
             </div>
             <table class="el-table" id="tsTable">
               <thead>
                 <tr>
-                  <th data-key="name">Source <span class="sort">↕</span></th>
-                  <th class="num sorted" data-key="total">Total <span class="sort">↓</span></th>
-                  <th class="num" data-key="uv">UV <span class="sort">↕</span></th>
-                  <th class="num" data-key="ppv">PPV <span class="sort">↕</span></th>
-                  <th class="num" data-key="ecpm">eCPM <span class="sort">↕</span></th>
-                  <th class="num" data-key="delta">Δ% <span class="sort">↕</span></th>
-                  <th>Trend</th>
+                  <th data-key="name"  data-tip="Traffic source · ad network or direct">Source<span class="unit">name</span> <span class="sort">↕</span></th>
+                  <th class="num sorted" data-key="total" data-tip="Total impressions delivered from this source over the last 7 days">Total<span class="unit">impressions</span> <span class="sort">↓</span></th>
+                  <th class="num" data-key="uv"  data-tip="Unique visitors — distinct users that loaded at least one ad">UV<span class="unit">unique users</span> <span class="sort">↕</span></th>
+                  <th class="num" data-key="ppv" data-tip="Pages per visitor — average page-views per unique user">PPV<span class="unit">pages / UV</span> <span class="sort">↕</span></th>
+                  <th class="num headline" data-key="ecpm" data-tip="Effective CPM — average revenue per 1,000 impressions across all formats">eCPM<span class="unit">USD / 1k imp.</span> <span class="sort">↕</span></th>
+                  <th class="num" data-key="delta" data-tip="eCPM change vs previous 7-day period (week-over-week)">Δ%<span class="unit">eCPM WoW</span> <span class="sort">↕</span></th>
+                  <th data-tip="eCPM over the last 7 days · sparkline">Trend<span class="unit">7d eCPM</span></th>
                 </tr>
               </thead>
               <tbody id="tsBody"></tbody>
@@ -662,18 +783,18 @@
 
           <section class="card">
             <div class="section-head">
-              <h2>Revenue by Websites<span class="new-flag">NEW</span></h2>
-              <span class="sub">Last 7 days · sortable</span>
+              <h2>Revenue by Websites<span class="new-flag">NEW</span><i class="info-i" data-tip="Which of your websites brings how much money.&#10;Headline metric: Revenue ($).&#10;eCPM shows efficiency." data-tip-pos="bottom">i</i></h2>
+              <span class="sub">Last 7 days · headline = Revenue</span>
             </div>
             <table class="el-table" id="wsTable">
               <thead>
                 <tr>
-                  <th data-key="name">Website <span class="sort">↕</span></th>
-                  <th class="num" data-key="total">Total <span class="sort">↕</span></th>
-                  <th class="num sorted" data-key="revenue">Revenue <span class="sort">↓</span></th>
-                  <th class="num" data-key="ecpm">eCPM <span class="sort">↕</span></th>
-                  <th class="num" data-key="delta">Δ% <span class="sort">↕</span></th>
-                  <th>Trend</th>
+                  <th data-key="name" data-tip="Website hosting your ads">Website<span class="unit">domain</span> <span class="sort">↕</span></th>
+                  <th class="num" data-key="total" data-tip="Total impressions on the website over the last 7 days">Total<span class="unit">impressions</span> <span class="sort">↕</span></th>
+                  <th class="num headline sorted" data-key="revenue" data-tip="Revenue earned from this website over the last 7 days">Revenue<span class="unit">USD</span> <span class="sort">↓</span></th>
+                  <th class="num" data-key="ecpm" data-tip="Effective CPM — revenue per 1,000 impressions">eCPM<span class="unit">USD / 1k imp.</span> <span class="sort">↕</span></th>
+                  <th class="num" data-key="delta" data-tip="Revenue change vs previous 7-day period (week-over-week)">Δ%<span class="unit">Revenue WoW</span> <span class="sort">↕</span></th>
+                  <th data-tip="Daily revenue over the last 7 days · sparkline">Trend<span class="unit">7d revenue</span></th>
                 </tr>
               </thead>
               <tbody id="wsBody"></tbody>
@@ -684,16 +805,16 @@
         <!-- ===== 6. Top movers ===== -->
         <section class="card">
           <div class="section-head">
-            <h2>Top movers<span class="new-flag">NEW</span></h2>
+            <h2>Top movers<span class="new-flag">NEW</span><i class="info-i" data-tip="What grew and what dropped the most.&#10;Items with negligible absolute change are hidden to&#10;reduce noise (e.g., +200% on a $0.02 row)." data-tip-pos="bottom">i</i></h2>
             <div style="display:flex; gap:8px;">
               <div class="seg" id="moversDim">
-                <button data-dim="website" class="active">Website</button>
-                <button data-dim="source">Traffic source</button>
-                <button data-dim="format">Format</button>
+                <button data-dim="website" class="active" data-tip="Group movers by website"        data-tip-pos="bottom">Website</button>
+                <button data-dim="source"                 data-tip="Group movers by traffic source" data-tip-pos="bottom">Traffic source</button>
+                <button data-dim="format"                 data-tip="Group movers by ad format"      data-tip-pos="bottom">Format</button>
               </div>
               <div class="seg" id="moversPeriod">
-                <button data-mp="day" class="active">vs Yesterday</button>
-                <button data-mp="week">vs Last week</button>
+                <button data-mp="day"  class="active" data-tip="Compare today vs yesterday"           data-tip-pos="bottom">vs Yesterday</button>
+                <button data-mp="week"                data-tip="Compare last 7 days vs previous 7 days" data-tip-pos="bottom">vs Last week</button>
               </div>
             </div>
           </div>
@@ -865,18 +986,25 @@
     /* =============================================================
        INCOME HEADER — 4 cards
     ============================================================= */
+    const incomeTips = {
+      "Today's income":         "Income accrued so far today (UTC).\nBaseline: average of the same weekday\nover the last 4 weeks.",
+      "Yesterday's income":     "Total income earned yesterday (UTC).\nBaseline: the day before yesterday.",
+      "This month's income":    "Income for the current calendar month.\nBaseline: same number of days into\nthe previous month.",
+      "Last 30 days' income":   "Rolling 30-day income (today − 30 days).\nBaseline: the 30 days before that window.",
+    };
     function renderIncomes() {
       const root = document.getElementById("incomes");
       root.innerHTML = incomes.map(i => {
         const sc = stripeClass(i.delta);
         const dc = deltaClass(i.delta);
         const arrow = i.delta >= 0 ? "↑" : "↓";
-        return `<div class="income-card" title="${i.label}: ${usd(i.value)} (${pct(i.delta)}) — ${i.context}">
+        const tip = incomeTips[i.label] || "";
+        return `<div class="income-card">
           <span class="stripe ${sc}"></span>
-          <div class="label">${i.label}</div>
+          <div class="label">${i.label}<i class="info-i" data-tip="${tip}" data-tip-pos="bottom">i</i></div>
           <div class="row">
             <div class="value">${usd(i.value)}</div>
-            <div class="delta ${dc}">${arrow} ${Math.abs(i.delta).toFixed(1)}%</div>
+            <div class="delta ${dc}" data-tip="${arrow} ${Math.abs(i.delta).toFixed(1)}% vs baseline">${arrow} ${Math.abs(i.delta).toFixed(1)}%</div>
           </div>
           <div class="ctx">${i.context}</div>
           ${sparkline(i.spark, 200, 28)}
@@ -1157,9 +1285,22 @@
     /* Render rows */
     const fmtCell = v => v == null ? '<span style="color:var(--text-3)">—</span>' : usd(v);
 
+    function deltaPill(v) {
+      if (v == null) return `<span class="delta-pill flat">—</span>`;
+      const absVal = Math.abs(v).toFixed(1);
+      if (Math.abs(v) < 0.5) return `<span class="delta-pill flat">±${absVal}%</span>`;
+      if (v >= 0) return `<span class="delta-pill up"><span class="arrow">▲</span>${absVal}%</span>`;
+      return `<span class="delta-pill down"><span class="arrow">▼</span>${absVal}%</span>`;
+    }
+
+    function trendTip(hist, isMoney) {
+      const first = hist[0], last = hist[hist.length - 1];
+      const ch = ((last - first) / first) * 100;
+      const fmt = v => isMoney ? "$" + Number(v).toFixed(2) : Number(v).toLocaleString("en-US");
+      return `7-day trend: ${fmt(first)} → ${fmt(last)} (${ch >= 0 ? "+" : ""}${ch.toFixed(1)}%)`;
+    }
+
     function rowByDate(r) {
-      const dodCls = r.dod == null ? "" : r.dod >= 0 ? "delta-up" : "delta-down";
-      const dodTxt = r.dod == null ? "—" : pct(r.dod);
       return `<tr>
         <td>${r.date}</td>
         <td class="num">${fmtCell(r.banner)}</td>
@@ -1169,33 +1310,31 @@
         <td class="num">${fmtCell(r.inter)}</td>
         <td class="num">${fmtCell(r.ipp)}</td>
         <td class="num">${fmtCell(r.out)}</td>
-        <td class="num"><b>${usd(r.total)}</b></td>
-        <td class="num ${dodCls}">${dodTxt}</td>
+        <td class="num headline">${usd(r.total)}</td>
+        <td class="num">${deltaPill(r.dod)}</td>
       </tr>`;
     }
 
     function rowTS(r) {
-      const cls = r.delta >= 0 ? "delta-up" : "delta-down";
       return `<tr>
         <td class="name">${r.name}</td>
         <td class="num">${num(r.total)}</td>
         <td class="num">${num(r.uv)}</td>
         <td class="num">${r.ppv.toFixed(1)}</td>
-        <td class="num">${usd(r.ecpm)}</td>
-        <td class="num ${cls}">${pct(r.delta)}</td>
-        <td>${sparkline(r.ecpmHist, 80, 24)}</td>
+        <td class="num headline">${usd(r.ecpm)}</td>
+        <td class="num">${deltaPill(r.delta)}</td>
+        <td class="trend" data-tip="${trendTip(r.ecpmHist, true)}">${sparkline(r.ecpmHist, 80, 24)}</td>
       </tr>`;
     }
 
     function rowWS(r) {
-      const cls = r.delta >= 0 ? "delta-up" : "delta-down";
       return `<tr>
         <td class="name">${r.name}</td>
         <td class="num">${num(r.total)}</td>
-        <td class="num">${usd(r.revenue)}</td>
+        <td class="num headline">${usd(r.revenue)}</td>
         <td class="num">${usd(r.ecpm)}</td>
-        <td class="num ${cls}">${pct(r.delta)}</td>
-        <td>${sparkline(r.revHist, 80, 24)}</td>
+        <td class="num">${deltaPill(r.delta)}</td>
+        <td class="trend" data-tip="${trendTip(r.revHist, true)}">${sparkline(r.revHist, 80, 24)}</td>
       </tr>`;
     }
 
@@ -1231,11 +1370,15 @@
       const { growers, decliners } = moversData();
       const renderList = (arr, dir) => arr.length === 0
         ? `<div style="color:var(--text-3); font-size:13px; padding: 8px 0;">No items</div>`
-        : arr.map(x => `<div class="mover-row ${dir}">
-            <div class="name">${x.name}</div>
-            <div class="d-abs">${dir === "up" ? "+" : "−"}${usd(Math.abs(x.abs))}</div>
-            <div class="d-pct">${pct(x.delta)}</div>
-          </div>`).join("");
+        : arr.map(x => {
+            const absStr = (dir === "up" ? "+" : "−") + usd(Math.abs(x.abs)).replace("$", "$");
+            const tip = `${x.name}\nAbsolute change: ${absStr}\nRelative: ${pct(x.delta)}`;
+            return `<div class="mover-row ${dir}" data-tip="${tip}" data-tip-pos="bottom">
+              <div class="name">${x.name}</div>
+              <div class="d-abs">${absStr}</div>
+              <div class="d-pct">${deltaPill(x.delta).replace("delta-pill", "delta-pill")}</div>
+            </div>`;
+          }).join("");
       document.getElementById("growersList").innerHTML = renderList(growers, "up");
       document.getElementById("declinersList").innerHTML = renderList(decliners, "down");
     }
