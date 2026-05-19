@@ -414,7 +414,7 @@
     }
     table.el-table thead th {
       text-align: left;
-      padding: 10px 16px 24px;
+      padding: 12px 16px;
       font-weight: 500;
       color: var(--text-2);
       background: #fafafa;
@@ -423,27 +423,28 @@
       cursor: pointer;
       user-select: none;
       white-space: nowrap;
-      position: relative;
-      vertical-align: top;
-    }
-    table.el-table thead th.num { text-align: right; }
-    table.el-table thead th:hover { background: #f3f4f6; }
-    table.el-table thead th .sort {
-      display: inline-block;
-      width: 16px;
-      height: 16px;
-      line-height: 16px;
-      text-align: center;
       vertical-align: middle;
-      margin-left: 6px;
+    }
+    /* All columns left-aligned — eye doesn't need to scan to the right edge */
+    table.el-table thead th.num { text-align: left; }
+    table.el-table thead th:hover { background: #f1f3f6; }
+    table.el-table thead th .sort {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 20px;
+      height: 20px;
+      line-height: 1;
+      vertical-align: middle;
+      margin-left: 8px;
       color: var(--text-3);
-      font-size: 11px;
+      font-size: 13px;
       font-weight: 700;
-      border-radius: 3px;
-      background: transparent;
+      border-radius: 4px;
+      background: #ebeef5;
       transition: background 0.15s, color 0.15s;
     }
-    table.el-table thead th:hover .sort { color: var(--text-2); background: #eaecef; }
+    table.el-table thead th:hover .sort { color: var(--text); background: #d8dde6; }
     table.el-table thead th.sorted .sort {
       color: #fff;
       background: var(--success);
@@ -455,7 +456,8 @@
       font-variant-numeric: tabular-nums;
     }
     table.el-table tbody td.name { font-weight: 500; }
-    table.el-table tbody td.num { text-align: right; }
+    /* Mirror left-aligned headers in data cells */
+    table.el-table tbody td.num { text-align: left; }
     table.el-table tbody td.delta-up { color: var(--success); }
     table.el-table tbody td.delta-down { color: var(--danger); }
     table.el-table tbody tr:last-child td { border-bottom: none; }
@@ -635,24 +637,15 @@
       font-weight: 600;
       color: var(--text);
     }
-    /* Unit annotations — anchored to bottom of th, out of normal flow
-       so the sort indicator stays inline with the column title */
+    /* Unit annotation — inline next to column title (single-line header) */
     table.el-table thead th .unit {
-      position: absolute;
-      left: 16px;
-      right: auto;
-      bottom: 6px;
-      display: block;
-      font-size: 10px;
+      display: inline;
+      font-size: 11px;
       font-weight: 400;
       color: var(--text-3);
-      letter-spacing: 0.3px;
-      text-transform: none;
+      margin-left: 4px;
+      letter-spacing: 0.2px;
       white-space: nowrap;
-    }
-    table.el-table thead th.num .unit {
-      left: auto;
-      right: 16px;
     }
     /* Cursor for column tips */
     th[data-tip] { cursor: help; }
@@ -762,16 +755,16 @@
           <table class="el-table" id="byDateTable">
             <thead>
               <tr>
-                <th data-key="date" data-tip="Calendar day (UTC) · click to sort">Date<span class="unit">UTC</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="banner"  data-tip="Banner ads revenue for the day"><span class="fmt-dot" style="background:var(--c-banner)"></span>Banner<span class="unit">USD</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="pop"     data-tip="Popunder ads revenue for the day"><span class="fmt-dot" style="background:var(--c-popunder)"></span>Popunder<span class="unit">USD</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="invideo" data-tip="In-video ads revenue for the day"><span class="fmt-dot" style="background:var(--c-invideo)"></span>In-Video<span class="unit">USD</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="slider"  data-tip="Slider ads revenue for the day"><span class="fmt-dot" style="background:var(--c-slider)"></span>Slider<span class="unit">USD</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="inter"   data-tip="Interstitial ads revenue for the day"><span class="fmt-dot" style="background:var(--c-inter)"></span>Interstitial<span class="unit">USD</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="ipp"     data-tip="In-page push ads revenue for the day"><span class="fmt-dot" style="background:var(--c-ipp)"></span>In-Page Push<span class="unit">USD</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="out"     data-tip="OutStream ads revenue for the day"><span class="fmt-dot" style="background:var(--c-out)"></span>Outstream<span class="unit">USD</span> <span class="sort">↕</span></th>
-                <th class="num headline sorted" data-key="total" data-tip="Sum across all ad formats for the day">Total<span class="unit">USD</span> <span class="sort">↓</span></th>
-                <th class="num" data-key="dod" data-tip="Day-over-day change of Total vs the previous calendar day">vs Prev<span class="unit">Δ% DoD</span> <span class="sort">↕</span></th>
+                <th data-key="date" data-tip="Calendar day (UTC) · click to sort">Date <span class="unit">UTC</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="banner"  data-tip="Banner ads revenue for the day"><span class="fmt-dot" style="background:var(--c-banner)"></span>Banner <span class="unit">$</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="pop"     data-tip="Popunder ads revenue for the day"><span class="fmt-dot" style="background:var(--c-popunder)"></span>Popunder <span class="unit">$</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="invideo" data-tip="In-video ads revenue for the day"><span class="fmt-dot" style="background:var(--c-invideo)"></span>In-Video <span class="unit">$</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="slider"  data-tip="Slider ads revenue for the day"><span class="fmt-dot" style="background:var(--c-slider)"></span>Slider <span class="unit">$</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="inter"   data-tip="Interstitial ads revenue for the day"><span class="fmt-dot" style="background:var(--c-inter)"></span>Interstitial <span class="unit">$</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="ipp"     data-tip="In-page push ads revenue for the day"><span class="fmt-dot" style="background:var(--c-ipp)"></span>In-Page Push <span class="unit">$</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="out"     data-tip="OutStream ads revenue for the day"><span class="fmt-dot" style="background:var(--c-out)"></span>Outstream <span class="unit">$</span> <span class="sort">↕</span></th>
+                <th class="num headline sorted" data-key="total" data-tip="Sum across all ad formats for the day">Total <span class="unit">$</span> <span class="sort">↓</span></th>
+                <th class="num" data-key="dod" data-tip="Day-over-day change of Total vs the previous calendar day">Δ DoD <span class="unit">%</span> <span class="sort">↕</span></th>
               </tr>
             </thead>
             <tbody id="byDateBody"></tbody>
@@ -788,13 +781,13 @@
             <table class="el-table" id="tsTable">
               <thead>
                 <tr>
-                  <th data-key="name"  data-tip="Traffic source · ad network or direct">Source<span class="unit">name</span> <span class="sort">↕</span></th>
-                  <th class="num sorted" data-key="total" data-tip="Total impressions delivered from this source over the last 7 days">Total<span class="unit">impressions</span> <span class="sort">↓</span></th>
-                  <th class="num" data-key="uv"  data-tip="Unique visitors — distinct users that loaded at least one ad">UV<span class="unit">unique users</span> <span class="sort">↕</span></th>
-                  <th class="num" data-key="ppv" data-tip="Pages per visitor — average page-views per unique user">PPV<span class="unit">pages / UV</span> <span class="sort">↕</span></th>
-                  <th class="num headline" data-key="ecpm" data-tip="Effective CPM — average revenue per 1,000 impressions across all formats">eCPM<span class="unit">USD / 1k imp.</span> <span class="sort">↕</span></th>
-                  <th class="num" data-key="delta" data-tip="eCPM change vs previous 7-day period (week-over-week)">Δ%<span class="unit">eCPM WoW</span> <span class="sort">↕</span></th>
-                  <th data-tip="eCPM over the last 7 days · sparkline">Trend<span class="unit">7d eCPM</span></th>
+                  <th data-key="name"  data-tip="Traffic source · ad network or direct">Source <span class="sort">↕</span></th>
+                  <th class="num sorted" data-key="total" data-tip="Total impressions delivered from this source over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↓</span></th>
+                  <th class="num" data-key="uv"  data-tip="Unique visitors — distinct users that loaded at least one ad">UV <span class="unit">users</span> <span class="sort">↕</span></th>
+                  <th class="num" data-key="ppv" data-tip="Pages per visitor — average page-views per unique user">PPV <span class="unit">pages/UV</span> <span class="sort">↕</span></th>
+                  <th class="num headline" data-key="ecpm" data-tip="Effective CPM — average revenue per 1,000 impressions across all formats">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
+                  <th class="num" data-key="delta" data-tip="eCPM change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
+                  <th data-tip="eCPM over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
                 </tr>
               </thead>
               <tbody id="tsBody"></tbody>
@@ -809,12 +802,12 @@
             <table class="el-table" id="wsTable">
               <thead>
                 <tr>
-                  <th data-key="name" data-tip="Website hosting your ads">Website<span class="unit">domain</span> <span class="sort">↕</span></th>
-                  <th class="num" data-key="total" data-tip="Total impressions on the website over the last 7 days">Total<span class="unit">impressions</span> <span class="sort">↕</span></th>
-                  <th class="num headline sorted" data-key="revenue" data-tip="Revenue earned from this website over the last 7 days">Revenue<span class="unit">USD</span> <span class="sort">↓</span></th>
-                  <th class="num" data-key="ecpm" data-tip="Effective CPM — revenue per 1,000 impressions">eCPM<span class="unit">USD / 1k imp.</span> <span class="sort">↕</span></th>
-                  <th class="num" data-key="delta" data-tip="Revenue change vs previous 7-day period (week-over-week)">Δ%<span class="unit">Revenue WoW</span> <span class="sort">↕</span></th>
-                  <th data-tip="Daily revenue over the last 7 days · sparkline">Trend<span class="unit">7d revenue</span></th>
+                  <th data-key="name" data-tip="Website hosting your ads">Website <span class="sort">↕</span></th>
+                  <th class="num" data-key="total" data-tip="Total impressions on the website over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↕</span></th>
+                  <th class="num headline sorted" data-key="revenue" data-tip="Revenue earned from this website over the last 7 days">Revenue <span class="unit">$</span> <span class="sort">↓</span></th>
+                  <th class="num" data-key="ecpm" data-tip="Effective CPM — revenue per 1,000 impressions">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
+                  <th class="num" data-key="delta" data-tip="Revenue change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
+                  <th data-tip="Daily revenue over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
                 </tr>
               </thead>
               <tbody id="wsBody"></tbody>
