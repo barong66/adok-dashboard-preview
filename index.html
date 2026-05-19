@@ -844,49 +844,48 @@
           </div>
         </section>
 
-        <!-- ===== 4 + 5. Traffic Sources & Websites (NEW per #118), side by side ===== -->
-        <div class="two-col">
-          <section class="card">
-            <div class="section-head">
-              <h2>Revenue by Traffic Sources<span class="new-flag">NEW</span><i class="info-i" data-tip="Where your traffic comes from.&#10;Headline metric: eCPM (efficiency).&#10;Volume metrics: Total, UV, PPV." data-tip-pos="bottom">i</i></h2>
-              <span class="sub">Last 7 days · headline = eCPM</span>
-            </div>
-            <table class="el-table" id="tsTable">
-              <thead>
-                <tr>
-                  <th data-key="name"  data-tip="Traffic source · ad network or direct">Source <span class="sort">↕</span></th>
-                  <th class="num sorted" data-key="total" data-tip="Total impressions delivered from this source over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↓</span></th>
-                  <th class="num" data-key="uv"  data-tip="Unique visitors — distinct users that loaded at least one ad">UV <span class="unit">users</span> <span class="sort">↕</span></th>
-                  <th class="num" data-key="ppv" data-tip="Pages per visitor — average page-views per unique user">PPV <span class="unit">pages/UV</span> <span class="sort">↕</span></th>
-                  <th class="num headline" data-key="ecpm" data-tip="Effective CPM — average revenue per 1,000 impressions across all formats">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
-                  <th class="num" data-key="delta" data-tip="eCPM change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
-                  <th data-tip="eCPM over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
-                </tr>
-              </thead>
-              <tbody id="tsBody"></tbody>
-            </table>
-          </section>
+        <!-- ===== 4. Revenue by Websites / Spots (NEW per #118) — full width ===== -->
+        <section class="card">
+          <div class="section-head">
+            <h2>Revenue by Websites / Spots<span class="new-flag">NEW</span><i class="info-i" data-tip="Which of your websites brings how much money.&#10;Click a website to expand into its spots.&#10;Headline metric: Revenue ($)." data-tip-pos="bottom">i</i></h2>
+            <span class="sub">Last 7 days · click website to expand spots</span>
+          </div>
+          <table class="el-table" id="wsTable">
+            <thead>
+              <tr>
+                <th data-key="name" data-tip="Website hosting your ads">Website <span class="sort">↕</span></th>
+                <th class="num" data-key="total" data-tip="Total impressions on the website over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↕</span></th>
+                <th class="num headline sorted" data-key="revenue" data-tip="Revenue earned from this website over the last 7 days">Revenue <span class="unit">$</span> <span class="sort">↓</span></th>
+                <th class="num" data-key="ecpm" data-tip="Effective CPM — revenue per 1,000 impressions">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="delta" data-tip="Revenue change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
+                <th data-tip="Daily revenue over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
+              </tr>
+            </thead>
+            <tbody id="wsBody"></tbody>
+          </table>
+        </section>
 
-          <section class="card">
-            <div class="section-head">
-              <h2>Revenue by Websites / Spots<span class="new-flag">NEW</span><i class="info-i" data-tip="Which of your websites brings how much money.&#10;Click a website to expand into its spots.&#10;Headline metric: Revenue ($)." data-tip-pos="bottom">i</i></h2>
-              <span class="sub">Last 7 days · click website to expand spots</span>
-            </div>
-            <table class="el-table" id="wsTable">
-              <thead>
-                <tr>
-                  <th data-key="name" data-tip="Website hosting your ads">Website <span class="sort">↕</span></th>
-                  <th class="num" data-key="total" data-tip="Total impressions on the website over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↕</span></th>
-                  <th class="num headline sorted" data-key="revenue" data-tip="Revenue earned from this website over the last 7 days">Revenue <span class="unit">$</span> <span class="sort">↓</span></th>
-                  <th class="num" data-key="ecpm" data-tip="Effective CPM — revenue per 1,000 impressions">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
-                  <th class="num" data-key="delta" data-tip="Revenue change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
-                  <th data-tip="Daily revenue over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
-                </tr>
-              </thead>
-              <tbody id="wsBody"></tbody>
-            </table>
-          </section>
-        </div>
+        <!-- ===== 5. Revenue by Traffic Sources (NEW per #118) — full width ===== -->
+        <section class="card">
+          <div class="section-head">
+            <h2>Revenue by Traffic Sources<span class="new-flag">NEW</span><i class="info-i" data-tip="Where your traffic comes from.&#10;Headline metric: eCPM (efficiency).&#10;Volume metrics: Total, UV, PPV." data-tip-pos="bottom">i</i></h2>
+            <span class="sub">Last 7 days · headline = eCPM</span>
+          </div>
+          <table class="el-table" id="tsTable">
+            <thead>
+              <tr>
+                <th data-key="name"  data-tip="Traffic source · ad network or direct">Source <span class="sort">↕</span></th>
+                <th class="num sorted" data-key="total" data-tip="Total impressions delivered from this source over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↓</span></th>
+                <th class="num" data-key="uv"  data-tip="Unique visitors — distinct users that loaded at least one ad">UV <span class="unit">users</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="ppv" data-tip="Pages per visitor — average page-views per unique user">PPV <span class="unit">pages/UV</span> <span class="sort">↕</span></th>
+                <th class="num headline" data-key="ecpm" data-tip="Effective CPM — average revenue per 1,000 impressions across all formats">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="delta" data-tip="eCPM change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
+                <th data-tip="eCPM over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
+              </tr>
+            </thead>
+            <tbody id="tsBody"></tbody>
+          </table>
+        </section>
 
         <p class="devnote">
           Preview · cockpit redesign on top of <a href="https://gitlab.as12as.com/asg/support/-/work_items/118" target="_blank" rel="noopener">support#118</a> · sample data only
