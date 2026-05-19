@@ -3,414 +3,739 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Adok.ai — Dashboard preview</title>
+  <title>Activity | Adok.ai — Dashboard preview (support#118)</title>
   <style>
-    :root {
-      --bg: #f5f5f5;
-      --card-bg: #ffffff;
-      --border: #ebeef5;
-      --text: #1f2329;
-      --text-muted: #6b7280;
-      --grow: #67c23a;
-      --fall: #f56c6c;
-      --accent: #409eff;
-      --table-head-bg: #fafafa;
-      --row-hover: #f7faff;
-      --bar-bg: #eef2f7;
-      --radius: 16px;
-      --shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
-    }
-
+    /* ---------- Reset & base ---------- */
     * { box-sizing: border-box; }
-
-    html, body {
-      margin: 0;
-      padding: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Inter, Roboto, sans-serif;
+    html, body { margin: 0; padding: 0; }
+    body {
+      background: #f5f5f5;
+      color: #303133;
+      font-family: "Helvetica Neue", Helvetica, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", Arial, sans-serif;
       font-size: 14px;
       line-height: 1.4;
+      -webkit-font-smoothing: antialiased;
+    }
+    a { color: inherit; text-decoration: none; }
+    button { font-family: inherit; }
+
+    :root {
+      --bg: #f5f5f5;
+      --white: #ffffff;
+      --border: #ebeef5;
+      --border-2: #e6e6e6;
+      --text: #303133;
+      --text-2: #606266;
+      --text-3: #909399;
+      --success: #67c23a;     /* green (active buttons) */
+      --success-hover: #5daf34;
+      --danger: #f56c6c;      /* red (negative deltas) */
+      --primary: #409eff;     /* element-plus default blue (links in table) */
+      --row-stripe: #fafafa;
+      --row-hover: #f5f7fa;
     }
 
-    .container {
-      max-width: 1280px;
-      margin: 0 auto;
-      padding: 24px 24px 48px;
+    /* ---------- App shell ---------- */
+    .app {
+      display: grid;
+      grid-template-columns: 200px 1fr;
+      min-height: 100vh;
     }
 
+    /* ---------- Sidebar ---------- */
+    .sidebar {
+      background: var(--white);
+      border-right: 1px solid var(--border-2);
+      display: flex;
+      flex-direction: column;
+    }
+    .sidebar .logo {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 22px;
+      letter-spacing: 0.5px;
+    }
+    .sidebar .logo .adok { color: #1d1d1f; }
+    .sidebar .logo .dot  { color: #1d1d1f; }
+    .sidebar .logo .ai   { color: #7e57c2; }
+    .sidebar nav { padding: 4px 0 12px; flex: 1; }
+    .sidebar .group-title {
+      text-transform: uppercase;
+      font-size: 12px;
+      color: var(--text-3);
+      padding: 14px 20px 6px;
+      letter-spacing: 0.6px;
+    }
+    .sidebar a.item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 20px;
+      height: 40px;
+      line-height: 40px;
+      color: var(--text-2);
+      font-size: 14px;
+    }
+    .sidebar a.item:hover { background: #f5f7fa; }
+    .sidebar a.item.active {
+      color: var(--success);
+      border-right: 3px solid var(--success);
+      background: #f0f9eb;
+    }
+    .sidebar a.item .ic {
+      display: inline-block;
+      width: 18px;
+      height: 18px;
+      flex-shrink: 0;
+      stroke: currentColor;
+      fill: none;
+      stroke-width: 1.8;
+    }
+    .sidebar .extras {
+      padding: 10px 20px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      font-size: 13px;
+    }
+    .sidebar .extras .row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-2);
+    }
+    .sidebar .extras .arrow {
+      width: 16px;
+      height: 16px;
+      flex-shrink: 0;
+      color: var(--success);
+    }
+    .sidebar .extras .row b { font-weight: 600; color: var(--text); }
+    .sidebar .extras .note {
+      display: inline-block;
+      padding: 1px 8px;
+      background: #f0f9eb;
+      color: #4a7f1f;
+      border-radius: 4px;
+      font-weight: 600;
+    }
+
+    /* ---------- Topbar ---------- */
+    .topbar {
+      background: var(--white);
+      border-bottom: 1px solid var(--border-2);
+      height: 50px;
+      display: flex;
+      align-items: center;
+      padding: 0 20px;
+      gap: 16px;
+    }
+    .topbar .burger {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      color: var(--text-2);
+    }
+    .topbar .crumb {
+      color: var(--text-2);
+      font-size: 14px;
+    }
+    .topbar .spacer { flex: 1; }
+    .topbar .search {
+      width: 220px;
+      height: 30px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      padding: 0 10px;
+      font-size: 13px;
+      color: var(--text-2);
+      background: var(--white);
+    }
+    .topbar .icon-btn {
+      width: 30px;
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--text-3);
+      cursor: pointer;
+    }
+    .topbar .balance {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text);
+      font-size: 14px;
+    }
+    .topbar .balance svg { color: var(--success); }
+    .topbar .user {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      color: var(--text);
+      font-size: 14px;
+      cursor: pointer;
+    }
+
+    /* ---------- Main ---------- */
+    .main { padding: 20px; }
     .page-title {
-      font-size: 24px;
+      font-size: 22px;
       font-weight: 700;
-      line-height: 36px;
-      padding-bottom: 16px;
+      margin: 0 0 16px;
+      color: var(--text);
     }
 
     .card {
-      background: var(--card-bg);
+      background: var(--white);
       border: 1px solid var(--border);
-      border-radius: var(--radius);
-      box-shadow: var(--shadow);
+      border-radius: 16px;
       margin-bottom: 16px;
     }
+    .new-flag {
+      display: inline-flex;
+      align-items: center;
+      font-size: 10px;
+      font-weight: 700;
+      color: #fff;
+      background: var(--success);
+      padding: 2px 8px;
+      border-radius: 10px;
+      letter-spacing: 0.6px;
+      vertical-align: middle;
+      margin-left: 8px;
+    }
 
-    /* ===== Incomes header ===== */
+    /* ---------- Income header (6 cards) ---------- */
     .incomes {
       display: grid;
       grid-template-columns: repeat(6, 1fr);
-      padding: 16px 0;
+      padding: 18px 0;
     }
     .incomes .col {
-      padding: 8px 24px;
+      padding: 4px 28px;
       border-left: 1px solid #dddfe6;
     }
     .incomes .col:first-child { border-left: none; }
-    .incomes .title {
+    .incomes .col .label {
       font-size: 13px;
       font-weight: 500;
-      color: var(--text-muted);
+      color: var(--text);
       white-space: nowrap;
       margin-bottom: 4px;
     }
-    .incomes .income {
-      font-size: 24px;
-      font-weight: 500;
+    .incomes .col .value {
+      font-size: 22px;
+      font-weight: 400;
+      color: var(--text);
       white-space: nowrap;
     }
-    .incomes .delta {
+    .incomes .col .delta {
       font-size: 13px;
-      margin-left: 6px;
+      margin-left: 4px;
       font-weight: 400;
     }
-    .incomes .grow { color: var(--grow); }
-    .incomes .fall { color: var(--fall); }
+    .grow { color: var(--success); }
+    .fall { color: var(--danger); }
 
-    @media (max-width: 1100px) {
+    @media (max-width: 1200px) {
       .incomes { grid-template-columns: repeat(3, 1fr); }
-      .incomes .col { border-left: none; }
-    }
-    @media (max-width: 640px) {
-      .incomes { grid-template-columns: repeat(2, 1fr); }
+      .incomes .col { border-left: none; padding: 12px 20px; }
     }
 
-    /* ===== Realtime activity ===== */
-    .realtime {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      padding: 16px 24px;
-      gap: 16px;
-      align-items: center;
-    }
-    .realtime .item .label {
-      font-size: 12px;
-      font-weight: 500;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
-      margin-bottom: 2px;
-    }
-    .realtime .item .value {
-      font-size: 18px;
-      font-weight: 600;
-    }
-    .realtime .pulse {
-      display: inline-block;
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: var(--grow);
-      margin-right: 6px;
-      box-shadow: 0 0 0 0 rgba(103, 194, 58, 0.6);
-      animation: pulse 1.6s infinite;
-    }
-    @keyframes pulse {
-      0%   { box-shadow: 0 0 0 0 rgba(103, 194, 58, 0.6); }
-      70%  { box-shadow: 0 0 0 8px rgba(103, 194, 58, 0); }
-      100% { box-shadow: 0 0 0 0 rgba(103, 194, 58, 0); }
-    }
-    @media (max-width: 800px) {
-      .realtime { grid-template-columns: repeat(2, 1fr); }
-    }
-
-    /* ===== Section header ===== */
-    .section-head {
-      padding: 16px 20px;
-      border-bottom: 1px solid var(--border);
+    /* ---------- Activity chart card ---------- */
+    .chart-card { padding: 14px 16px 18px; position: relative; }
+    .chart-toolbar {
       display: flex;
-      align-items: center;
       justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
     }
-    .section-head h2 {
-      margin: 0;
-      font-size: 16px;
-      font-weight: 600;
-    }
-    .section-head .sub {
-      font-size: 12px;
-      color: var(--text-muted);
-    }
-    .new-badge {
-      display: inline-block;
-      font-size: 10px;
-      font-weight: 600;
-      color: #fff;
-      background: var(--accent);
-      padding: 2px 8px;
-      border-radius: 10px;
-      margin-left: 8px;
-      vertical-align: middle;
-      letter-spacing: 0.5px;
-    }
-
-    /* ===== Revenue by ad format (bars) ===== */
-    .bars {
-      padding: 16px 20px;
-    }
-    .bar-row {
-      display: grid;
-      grid-template-columns: 130px 1fr 90px;
-      align-items: center;
-      gap: 12px;
-      padding: 6px 0;
-    }
-    .bar-row .name {
-      font-size: 13px;
-      font-weight: 500;
-    }
-    .bar-row .track {
-      background: var(--bar-bg);
-      border-radius: 6px;
-      height: 14px;
+    .seg {
+      display: inline-flex;
+      border: 1px solid #dcdfe6;
+      border-radius: 4px;
       overflow: hidden;
+    }
+    .seg button {
+      background: var(--white);
+      border: none;
+      border-left: 1px solid #dcdfe6;
+      color: var(--text-2);
+      padding: 6px 12px;
+      font-size: 12px;
+      cursor: pointer;
+      line-height: 1;
+    }
+    .seg button:first-child { border-left: none; }
+    .seg button.active {
+      background: var(--success);
+      color: #fff;
+      border-color: var(--success);
+    }
+    .chart-wrap {
       position: relative;
+      height: 360px;
     }
-    .bar-row .fill {
-      background: linear-gradient(90deg, #409eff, #67c23a);
-      height: 100%;
-      border-radius: 6px;
-      transition: width 0.4s ease;
+    .chart-wrap svg { display: block; width: 100%; height: 100%; }
+    .scrubber {
+      position: absolute;
+      top: 4px;
+      left: 0;
+      right: 0;
+      height: 36px;
+      background: #f5f5f5;
+      border-radius: 4px;
+      overflow: hidden;
     }
-    .bar-row .value {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      font-feature-settings: "tnum";
-      font-size: 13px;
-      font-weight: 600;
+    .chart-zoom-btn {
+      position: absolute;
+      top: 50px;
+      right: 14px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: var(--primary);
+      color: #fff;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+    }
+    .y-label {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: rotate(-90deg) translateX(-50%);
+      color: var(--text-3);
+      font-size: 11px;
     }
 
-    /* ===== Tables ===== */
-    table {
+    /* ---------- Tables (Element Plus look) ---------- */
+    .section-head {
+      padding: 14px 16px 10px;
+      font-size: 18px;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.2;
+    }
+    table.el-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 13px;
     }
-    thead th {
-      background: var(--table-head-bg);
+    table.el-table thead th {
       text-align: left;
-      padding: 10px 16px;
-      font-weight: 600;
-      color: var(--text-muted);
+      padding: 10px 14px;
+      font-weight: 400;
+      color: var(--text-2);
+      background: var(--white);
       border-bottom: 1px solid var(--border);
-      font-size: 12px;
-      text-transform: uppercase;
-      letter-spacing: 0.4px;
+      font-size: 13px;
     }
-    tbody td {
-      padding: 12px 16px;
+    table.el-table tbody td {
+      padding: 12px 14px;
       border-bottom: 1px solid #f0f2f5;
+      color: var(--text);
     }
-    tbody tr:last-child td { border-bottom: none; }
-    tbody tr:hover { background: var(--row-hover); }
-    td.num, th.num {
-      text-align: right;
-      font-variant-numeric: tabular-nums;
-      font-feature-settings: "tnum";
+    table.el-table tbody tr:last-child td { border-bottom: none; }
+    table.el-table tbody tr:hover { background: var(--row-hover); }
+    table.el-table tbody tr.total td {
+      background: #fafafa;
+      font-weight: 600;
     }
-    td.name {
+    table.el-table td.link { color: var(--primary); }
+    .table-foot {
+      padding: 14px 16px;
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      flex-wrap: wrap;
+    }
+    .btn {
+      padding: 8px 16px;
+      border-radius: 4px;
+      font-size: 13px;
       font-weight: 500;
+      border: 1px solid var(--success);
+      background: var(--success);
+      color: #fff;
+      cursor: pointer;
+      line-height: 1;
     }
+    .btn:hover { background: var(--success-hover); border-color: var(--success-hover); }
 
-    /* ===== Footer ===== */
-    footer {
-      margin-top: 32px;
+    /* ---------- Footer dev note ---------- */
+    .devnote {
       text-align: center;
-      color: var(--text-muted);
+      color: var(--text-3);
       font-size: 12px;
+      padding: 16px 0 8px;
     }
-    footer a {
-      color: var(--text-muted);
-      text-decoration: underline;
-    }
+    .devnote a { color: var(--text-3); text-decoration: underline; }
   </style>
 </head>
 <body>
-  <div class="container">
+  <div class="app">
 
-    <h1 class="page-title">Dashboard</h1>
-
-    <!-- 1. Incomes header (kept as-is per support#118) -->
-    <section class="card incomes" id="incomes"></section>
-
-    <!-- 2. Realtime activity (kept as-is per support#118) -->
-    <section class="card realtime" id="realtime"></section>
-
-    <!-- 3. Revenue by ad format (kept per support#118) -->
-    <section class="card">
-      <div class="section-head">
-        <h2>Revenue by ad format</h2>
-        <span class="sub">Today</span>
+    <!-- ============ SIDEBAR ============ -->
+    <aside class="sidebar">
+      <div class="logo">
+        <span class="adok">ADOK</span><span class="dot">.</span><span class="ai">AI</span>
       </div>
-      <div class="bars" id="bars"></div>
-    </section>
+      <nav>
+        <a class="item active" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M3 12l9-9 9 9"/><path d="M5 10v10h14V10"/></svg>
+          Dashboard
+        </a>
 
-    <!-- 4. NEW: Revenue by Traffic Sources -->
-    <section class="card">
-      <div class="section-head">
-        <h2>Revenue by Traffic Sources<span class="new-badge">NEW</span></h2>
-        <span class="sub">Last 24 h</span>
+        <div class="group-title">traffic</div>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
+          Websites
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
+          Traffic sources
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
+          Spots
+        </a>
+
+        <div class="group-title">advertising</div>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
+          Rotation
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16l-2 12H6L4 7z"/><path d="M9 7V5a3 3 0 1 1 6 0v2"/></svg>
+          Marketplace
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          Deals
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
+          Mediakits
+        </a>
+
+        <div class="group-title">extra tools</div>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+          Reports
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M9.94 14.06l4.12-4.12"/><path d="M5 10c0-3 2-5 5-5s5 2 5 5"/><path d="M15 14c0 3-2 5-5 5s-5-2-5-5"/></svg>
+          Anti Ad Block
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><path d="M1 12h3M20 12h3M12 1v3M12 20v3"/></svg>
+          Ad Scans
+        </a>
+
+        <div class="group-title">more</div>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M6 9V5h12v4"/><path d="M6 13a6 6 0 0 0 12 0"/><path d="M9 22h6"/></svg>
+          Referrals
+        </a>
+        <a class="item" href="#">
+          <svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="M7 12l3 3 7-7"/></svg>
+          Support telegram
+        </a>
+      </nav>
+      <div class="extras">
+        <div class="row"><svg class="arrow" viewBox="0 0 24 24" fill="currentColor"><path d="M5 12h12l-4-4 1.4-1.4L21 13l-6.6 6.4L13 18l4-4H5z"/></svg> Frozen:<b>NO</b></div>
+        <div class="row"><svg class="arrow" viewBox="0 0 24 24" fill="currentColor"><path d="M5 12h12l-4-4 1.4-1.4L21 13l-6.6 6.4L13 18l4-4H5z"/></svg> Payments:<b>all</b></div>
+        <div class="row"><span class="note">Add note</span></div>
       </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Traffic Source</th>
-            <th class="num">Total</th>
-            <th class="num">UV</th>
-            <th class="num">PPV</th>
-            <th class="num">eCPM</th>
-          </tr>
-        </thead>
-        <tbody id="tsBody"></tbody>
-      </table>
-    </section>
+    </aside>
 
-    <!-- 5. NEW: Revenue by Websites -->
-    <section class="card">
-      <div class="section-head">
-        <h2>Revenue by Websites<span class="new-badge">NEW</span></h2>
-        <span class="sub">Last 24 h</span>
-      </div>
-      <table>
-        <thead>
-          <tr>
-            <th>Website</th>
-            <th class="num">Total</th>
-            <th class="num">Revenue</th>
-            <th class="num">eCPM</th>
-          </tr>
-        </thead>
-        <tbody id="wsBody"></tbody>
-      </table>
-    </section>
+    <!-- ============ MAIN COLUMN ============ -->
+    <div>
+      <!-- Topbar -->
+      <header class="topbar">
+        <svg class="burger" viewBox="0 0 24 24" stroke="currentColor" fill="none" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        <span class="crumb">Activity</span>
+        <div class="spacer"></div>
+        <input class="search" type="text" placeholder="Search...">
+        <span class="icon-btn">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 1 1 4.4 1.6c-.5.5-1.4.8-1.9 1.4-.3.4-.5 1-.5 2"/><path d="M12 17h.01"/></svg>
+        </span>
+        <span class="balance">
+          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>
+          $246.62
+        </span>
+        <span class="user">
+          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
+          55294: networks
+          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+        </span>
+      </header>
 
-    <footer>
-      © AdSpyglass · Mockup for
-      <a href="https://gitlab.as12as.com/asg/support/-/work_items/118" target="_blank" rel="noopener">support#118</a>
-      — not production HTML, sample data only.
-    </footer>
+      <!-- Main content -->
+      <main class="main">
+        <h1 class="page-title">Dashboard</h1>
 
+        <!-- ===== 1. Income header (kept per #118) ===== -->
+        <section class="card incomes" id="incomes"></section>
+
+        <!-- ===== 2. Activity chart (kept per #118) ===== -->
+        <section class="card chart-card">
+          <div class="chart-toolbar">
+            <div class="seg">
+              <button class="active">Impressions</button>
+              <button>Requests</button>
+            </div>
+            <div class="seg" style="flex-wrap:wrap">
+              <button class="active">All&nbsp;types</button>
+              <button>Popunder</button>
+              <button>Banner</button>
+              <button>In-video</button>
+              <button>Slider</button>
+              <button>In-Page Push</button>
+              <button>Interstitial</button>
+              <button>OutStream</button>
+              <button>Direct Link</button>
+            </div>
+          </div>
+          <div class="chart-wrap" id="chart">
+            <span class="y-label">impressions</span>
+            <div class="scrubber" id="scrubber"></div>
+            <div class="chart-zoom-btn">−</div>
+            <svg id="chartSvg" preserveAspectRatio="none" viewBox="0 0 1000 360"></svg>
+          </div>
+        </section>
+
+        <!-- ===== 3. Revenue by date/format (KEPT per #118 — "доходы в разрезе рекламного формата") ===== -->
+        <section class="card">
+          <div class="section-head">Revenue by date/format</div>
+          <table class="el-table">
+            <thead>
+              <tr>
+                <th>Date</th>
+                <th>Banner</th>
+                <th>Popunder</th>
+                <th>In-Video</th>
+                <th>Slider</th>
+                <th>Interstitial</th>
+                <th>In-Page Push</th>
+                <th>Outstream</th>
+                <th>Total</th>
+              </tr>
+            </thead>
+            <tbody id="byDateBody"></tbody>
+          </table>
+        </section>
+
+        <!-- ===== 4. NEW per #118: Revenue by Traffic Sources ===== -->
+        <section class="card">
+          <div class="section-head">Revenue by Traffic Sources<span class="new-flag">NEW</span></div>
+          <table class="el-table">
+            <thead>
+              <tr>
+                <th>Traffic Source</th>
+                <th>Total</th>
+                <th>UV</th>
+                <th>PPV</th>
+                <th>eCPM</th>
+              </tr>
+            </thead>
+            <tbody id="tsBody"></tbody>
+          </table>
+        </section>
+
+        <!-- ===== 5. NEW per #118: Revenue by Websites ===== -->
+        <section class="card">
+          <div class="section-head">Revenue by Websites<span class="new-flag">NEW</span></div>
+          <table class="el-table">
+            <thead>
+              <tr>
+                <th>Website</th>
+                <th>Total</th>
+                <th>Revenue</th>
+                <th>eCPM</th>
+              </tr>
+            </thead>
+            <tbody id="wsBody"></tbody>
+          </table>
+        </section>
+
+        <p class="devnote">
+          Preview · pixel-aligned to current Adok.ai dashboard ·
+          changes per <a href="https://gitlab.as12as.com/asg/support/-/work_items/118" target="_blank" rel="noopener">support#118</a> ·
+          sample data, not production
+        </p>
+      </main>
+    </div>
   </div>
 
   <script>
-    // -------- Sample data (all values fabricated) --------
+    /* ============ DATA (from screenshot) ============ */
     const incomes = [
-      { title: "Today's income",          value: 124.83,  diff:  +6.2 },
-      { title: "Yesterday's income",      value: 121.05,  diff:  -2.1 },
-      { title: "7 days' income",          value: 842.40,  diff:  +4.7 },
-      { title: "This month's income",     value: 2104.66, diff:  +8.3 },
-      { title: "Previous month's income", value: 1965.20, diff:  +1.4 },
-      { title: "Last 30 days' income",    value: 2241.18, diff:  -0.6 },
+      { label: "Today's income",          value: 142.22 },
+      { label: "Yesterday's Income",      value: 312.35,  diff: -6 },
+      { label: "7 days' income",          value: 2339.18, diff: -9 },
+      { label: "This month's Income",     value: 6277.33, diff: -6 },
+      { label: "Previous month's Income", value: 10112.52, diff: -16 },
+      { label: "Last 30 days' Income",    value: 9927.06,  diff: -16 },
     ];
 
-    const realtime = [
-      { label: "Status",          value: "Live" , pulse: true },
-      { label: "Active visitors", value: "1 284" },
-      { label: "Requests / min",  value: "9 612" },
-      { label: "Today fill rate", value: "94.3 %" },
+    const byDate = [
+      { date: "2026-05-19", banner: 21.9,  pop: 96.83,  invideo: 0,    slider: 15.04, inter: 0, ipp: 1.89, out: 6.56,  total: 142.22 },
+      { date: "2026-05-18", banner: 46.54, pop: 216.36, invideo: 8.67, slider: 26.94, inter: 0, ipp: 2.81, out: 11.04, total: 312.36 },
+      { date: "2026-05-17", banner: 50.21, pop: 228.30, invideo: 9.15, slider: 29.04, inter: 0, ipp: 3.20, out: 12.39, total: 332.29 },
+      { date: "2026-05-16", banner: 47.84, pop: 221.18, invideo: 8.97, slider: 27.86, inter: 0, ipp: 3.58, out: 12.14, total: 321.57 },
+      { date: "2026-05-15", banner: 50.18, pop: 229.83, invideo: 8.50, slider: 28.73, inter: 0, ipp: 3.72, out: 12.84, total: 333.80 },
+      { date: "2026-05-14", banner: 52.03, pop: 247.95, invideo: 8.55, slider: 30.05, inter: 0, ipp: 5.06, out: 13.73, total: 357.37 },
     ];
 
-    // Revenue by ad format — bars (today, USD)
-    const adFormats = [
-      { name: "Popunder",     value: 58.40 },
-      { name: "Banner",       value: 22.10 },
-      { name: "In-video",     value: 28.05 },
-      { name: "In-page push", value: 11.80 },
-      { name: "Interstitial", value:  4.48 },
-    ];
-
-    // NEW: Revenue by Traffic Sources
+    /* NEW tables per #118 — sample rows */
     const trafficSources = [
-      { name: "Tubetraffic",     total: 154_320, uv:  98_410, ppv: 2.5, ecpm: 1.20 },
-      { name: "ExoClick",        total: 102_800, uv:  71_550, ppv: 2.1, ecpm: 0.95 },
-      { name: "Push.house",      total:  82_540, uv:  60_300, ppv: 2.3, ecpm: 1.05 },
-      { name: "JuicyAds",        total:  61_220, uv:  45_120, ppv: 1.8, ecpm: 0.78 },
-      { name: "TrafficStars",    total:  47_300, uv:  35_770, ppv: 1.6, ecpm: 0.72 },
-      { name: "Direct / Other",  total:  28_910, uv:  22_440, ppv: 1.4, ecpm: 0.61 },
+      { name: "Tubetraffic",    total: 154320, uv:  98410, ppv: 2.5, ecpm: 1.20 },
+      { name: "ExoClick",       total: 102800, uv:  71550, ppv: 2.1, ecpm: 0.95 },
+      { name: "Push.house",     total:  82540, uv:  60300, ppv: 2.3, ecpm: 1.05 },
+      { name: "JuicyAds",       total:  61220, uv:  45120, ppv: 1.8, ecpm: 0.78 },
+      { name: "TrafficStars",   total:  47300, uv:  35770, ppv: 1.6, ecpm: 0.72 },
+      { name: "Direct / Other", total:  28910, uv:  22440, ppv: 1.4, ecpm: 0.61 },
     ];
-
-    // NEW: Revenue by Websites
     const websites = [
-      { name: "some.porn",          total: 152_400, revenue: 168.40, ecpm: 1.10 },
-      { name: "eporner-mirror.com", total: 121_780, revenue: 134.20, ecpm: 1.10 },
-      { name: "tubemax.example",    total:  98_650, revenue:  82.15, ecpm: 0.83 },
-      { name: "xclips.example",     total:  72_310, revenue:  58.90, ecpm: 0.81 },
-      { name: "hubcdn.example",     total:  41_220, revenue:  29.74, ecpm: 0.72 },
+      { name: "some.porn",          total: 152400, revenue: 168.40, ecpm: 1.10 },
+      { name: "eporner-mirror.com", total: 121780, revenue: 134.20, ecpm: 1.10 },
+      { name: "tubemax.example",    total:  98650, revenue:  82.15, ecpm: 0.83 },
+      { name: "xclips.example",     total:  72310, revenue:  58.90, ecpm: 0.81 },
+      { name: "hubcdn.example",     total:  41220, revenue:  29.74, ecpm: 0.72 },
     ];
 
-    // -------- Renderers --------
-    const fmtUsd = v => "$" + v.toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-    const fmtNum = v => v.toLocaleString("en-US");
+    /* ============ FORMATTERS ============ */
+    const usd = v => "$" + Number(v).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    const num = v => Number(v).toLocaleString("en-US");
 
-    // Incomes
+    /* ============ INCOME HEADER ============ */
     document.getElementById("incomes").innerHTML = incomes.map(i => {
-      const cls = i.diff >= 0 ? "grow" : "fall";
-      const sign = i.diff >= 0 ? "↑" : "↓";
-      const diff = Math.abs(i.diff).toFixed(1);
-      return `
-        <div class="col">
-          <div class="title">${i.title}</div>
-          <div class="income">
-            ${fmtUsd(i.value)}
-            <span class="delta ${cls}">${sign} ${diff}%</span>
-          </div>
-        </div>`;
+      let delta = "";
+      if (typeof i.diff === "number") {
+        const cls = i.diff >= 0 ? "grow" : "fall";
+        const sign = i.diff >= 0 ? "↑" : "↓";
+        delta = `<span class="delta ${cls}">${sign} ${i.diff}%</span>`;
+      }
+      return `<div class="col">
+        <div class="label">${i.label}</div>
+        <div class="value">$${i.value.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}${delta}</div>
+      </div>`;
     }).join("");
 
-    // Realtime
-    document.getElementById("realtime").innerHTML = realtime.map(r => `
-      <div class="item">
-        <div class="label">${r.label}</div>
-        <div class="value">${r.pulse ? '<span class="pulse"></span>' : ""}${r.value}</div>
-      </div>`).join("");
+    /* ============ CHART (SVG area) ============ */
+    function genSeries(n, base, amp, drift) {
+      const pts = [];
+      let v = base;
+      for (let i = 0; i < n; i++) {
+        v += (Math.random() - 0.5) * amp + (drift / n);
+        pts.push(Math.max(800, Math.min(7000, v)));
+      }
+      return pts;
+    }
+    function pathFor(values, w, h, maxY) {
+      const stepX = w / (values.length - 1);
+      let d = `M 0 ${h - (values[0] / maxY) * h}`;
+      values.forEach((v, i) => {
+        d += ` L ${(i * stepX).toFixed(1)} ${(h - (v / maxY) * h).toFixed(1)}`;
+      });
+      d += ` L ${w} ${h} L 0 ${h} Z`;
+      return d;
+    }
+    (function drawChart() {
+      const svg = document.getElementById("chartSvg");
+      const W = 1000, H = 360;
+      const padTop = 50, padBottom = 30, padLeft = 36;
+      const innerH = H - padTop - padBottom;
+      const innerW = W - padLeft - 8;
 
-    // Bars
-    const maxAd = Math.max(...adFormats.map(a => a.value));
-    document.getElementById("bars").innerHTML = adFormats.map(a => {
-      const pct = (a.value / maxAd) * 100;
-      return `
-        <div class="bar-row">
-          <div class="name">${a.name}</div>
-          <div class="track"><div class="fill" style="width:${pct.toFixed(1)}%"></div></div>
-          <div class="value">${fmtUsd(a.value)}</div>
-        </div>`;
-    }).join("");
+      const n = 220;
+      const seriesA = genSeries(n, 3500, 700, 1800);   // purple
+      const seriesB = genSeries(n, 3800, 700, 1700);   // gray
 
-    // Traffic sources table
-    document.getElementById("tsBody").innerHTML = trafficSources.map(t => `
+      const yTicks = [0, 2000, 4000, 6000, 8000];
+      const yMax = 8000;
+
+      let gridLines = "";
+      yTicks.forEach(t => {
+        const y = padTop + innerH - (t / yMax) * innerH;
+        gridLines += `<line x1="${padLeft}" y1="${y.toFixed(1)}" x2="${W - 8}" y2="${y.toFixed(1)}" stroke="#eee" stroke-width="1"/>`;
+        gridLines += `<text x="${padLeft - 6}" y="${(y + 4).toFixed(1)}" font-size="11" fill="#909399" text-anchor="end">${t.toLocaleString("en-US")}</text>`;
+      });
+
+      const xLabels = ["06:00","09:00","12:00","15:00"];
+      let xAxis = "";
+      xLabels.forEach((lab, i) => {
+        const x = padLeft + (innerW * (i + 0.5) / xLabels.length);
+        xAxis += `<text x="${x.toFixed(1)}" y="${(H - 8).toFixed(1)}" font-size="11" fill="#909399" text-anchor="middle">${lab}</text>`;
+      });
+
+      const pA = pathFor(seriesA, innerW, innerH, yMax);
+      const pB = pathFor(seriesB, innerW, innerH, yMax);
+
+      svg.innerHTML = `
+        <g>${gridLines}</g>
+        <g transform="translate(${padLeft}, ${padTop})">
+          <path d="${pB}" fill="rgba(180, 184, 188, 0.45)" stroke="#b4b8bc" stroke-width="0.6"/>
+          <path d="${pA}" fill="rgba(186, 119, 209, 0.55)" stroke="#b252d4" stroke-width="0.6"/>
+        </g>
+        <g>${xAxis}</g>
+      `;
+
+      /* Scrubber preview (small sparkline + handles) */
+      const scrub = document.getElementById("scrubber");
+      const sm = genSeries(120, 3500, 400, 1200);
+      const sMax = 5000;
+      let sp = `M 0 ${36 - (sm[0]/sMax)*30}`;
+      sm.forEach((v,i)=>{ sp += ` L ${(i*(1000/(sm.length-1))).toFixed(1)} ${(36 - (v/sMax)*30).toFixed(1)}`; });
+      sp += ` L 1000 36 L 0 36 Z`;
+      scrub.innerHTML = `
+        <svg viewBox="0 0 1000 36" preserveAspectRatio="none" style="width:100%;height:100%">
+          <path d="${sp}" fill="rgba(160, 160, 160, 0.35)" stroke="#aaa" stroke-width="0.4"/>
+          <rect x="380" y="0" width="370" height="36" fill="rgba(160,160,160,0.18)"/>
+          <circle cx="380" cy="18" r="9" fill="#bbb" stroke="#fff" stroke-width="2"/>
+          <circle cx="750" cy="18" r="9" fill="#bbb" stroke="#fff" stroke-width="2"/>
+        </svg>
+      `;
+    })();
+
+    /* ============ TABLES ============ */
+    document.getElementById("byDateBody").innerHTML = byDate.map(r => `
       <tr>
-        <td class="name">${t.name}</td>
-        <td class="num">${fmtNum(t.total)}</td>
-        <td class="num">${fmtNum(t.uv)}</td>
-        <td class="num">${t.ppv.toFixed(1)}</td>
-        <td class="num">${fmtUsd(t.ecpm)}</td>
+        <td>${r.date}</td>
+        <td>${usd(r.banner)}</td>
+        <td>${usd(r.pop)}</td>
+        <td class="${r.invideo === 0 ? '' : 'link'}">$${r.invideo}</td>
+        <td>${usd(r.slider)}</td>
+        <td>$${r.inter}</td>
+        <td>${usd(r.ipp)}</td>
+        <td>${usd(r.out)}</td>
+        <td>${usd(r.total)}</td>
       </tr>`).join("");
 
-    // Websites table
+    document.getElementById("tsBody").innerHTML = trafficSources.map(t => `
+      <tr>
+        <td>${t.name}</td>
+        <td>${num(t.total)}</td>
+        <td>${num(t.uv)}</td>
+        <td>${t.ppv.toFixed(1)}</td>
+        <td>${usd(t.ecpm)}</td>
+      </tr>`).join("");
+
     document.getElementById("wsBody").innerHTML = websites.map(w => `
       <tr>
-        <td class="name">${w.name}</td>
-        <td class="num">${fmtNum(w.total)}</td>
-        <td class="num">${fmtUsd(w.revenue)}</td>
-        <td class="num">${fmtUsd(w.ecpm)}</td>
+        <td>${w.name}</td>
+        <td>${num(w.total)}</td>
+        <td>${usd(w.revenue)}</td>
+        <td>${usd(w.ecpm)}</td>
       </tr>`).join("");
   </script>
 </body>
