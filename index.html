@@ -975,19 +975,20 @@
         <!-- ===== 5. Revenue by Traffic Sources (NEW per #118) — full width ===== -->
         <section class="card">
           <div class="section-head">
-            <h2>Revenue by Traffic Sources<i class="info-i" data-tip="Where your traffic comes from.&#10;Headline metric: eCPM (efficiency).&#10;Volume metrics: Total, UV, PPV." data-tip-pos="bottom">i</i></h2>
-            <span class="sub">Last 7 days · headline = eCPM</span>
+            <h2>Revenue by Traffic Sources<i class="info-i" data-tip="Where your traffic comes from.&#10;Headline: Revenue ($).&#10;Volume: Total, UV, PPV. Efficiency: eCPM." data-tip-pos="bottom">i</i></h2>
+            <span class="sub">Last 7 days · headline = Revenue</span>
           </div>
           <table class="el-table" id="tsTable">
             <thead>
               <tr>
                 <th data-key="name"  data-tip="Traffic source · ad network or direct">Source <span class="sort">↕</span></th>
-                <th class="num sorted" data-key="total" data-tip="Total impressions delivered from this source over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↓</span></th>
+                <th class="num" data-key="total" data-tip="Total impressions delivered from this source over the last 7 days">Total <span class="unit">imp.</span> <span class="sort">↕</span></th>
+                <th class="num headline sorted" data-key="revenue" data-tip="Revenue earned from this source over the last 7 days">Revenue <span class="unit">$</span> <span class="sort">↓</span></th>
                 <th class="num" data-key="uv"  data-tip="Unique visitors — distinct users that loaded at least one ad">UV <span class="unit">users</span> <span class="sort">↕</span></th>
                 <th class="num" data-key="ppv" data-tip="Pages per visitor — average page-views per unique user">PPV <span class="unit">pages/UV</span> <span class="sort">↕</span></th>
-                <th class="num headline" data-key="ecpm" data-tip="Effective CPM — average revenue per 1,000 impressions across all formats">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
-                <th class="num" data-key="delta" data-tip="eCPM change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
-                <th data-tip="eCPM over the last 7 days · sparkline">Trend <span class="unit">7d</span></th>
+                <th class="num" data-key="ecpm" data-tip="Effective CPM — average revenue per 1,000 impressions across all formats">eCPM <span class="unit">$/1k</span> <span class="sort">↕</span></th>
+                <th class="num" data-key="delta" data-tip="Revenue change vs previous 7-day period (week-over-week)">Δ% <span class="unit">WoW</span> <span class="sort">↕</span></th>
+                <th data-tip="eCPM over the last 7 days · sparkline">Trend <span class="unit">7d eCPM</span></th>
               </tr>
             </thead>
             <tbody id="tsBody"></tbody>
@@ -1072,14 +1073,15 @@
       r.dod = next ? ((r.total - next.total) / next.total) * 100 : null;
     });
 
-    /* Traffic Sources — 7d roll-up. ecpmHist = 7 daily eCPM points. */
+    /* Traffic Sources — 7d roll-up. revenue = total × eCPM / 1000.
+       ecpmHist = 7 daily eCPM points (used for Trend sparkline). */
     const trafficSources = [
-      { name: "Tubetraffic",    total: 154320, uv: 98410, ppv: 2.5, ecpm: 1.20, delta:  +4.2, ecpmHist: [1.10,1.12,1.15,1.18,1.17,1.19,1.20] },
-      { name: "ExoClick",       total: 102800, uv: 71550, ppv: 2.1, ecpm: 0.95, delta:  -8.5, ecpmHist: [1.05,1.04,1.02,1.00,0.99,0.97,0.95] },
-      { name: "Push.house",     total:  82540, uv: 60300, ppv: 2.3, ecpm: 1.05, delta: +12.1, ecpmHist: [0.90,0.93,0.96,0.99,1.01,1.03,1.05] },
-      { name: "JuicyAds",       total:  61220, uv: 45120, ppv: 1.8, ecpm: 0.78, delta:  -3.4, ecpmHist: [0.82,0.81,0.80,0.79,0.79,0.78,0.78] },
-      { name: "TrafficStars",   total:  47300, uv: 35770, ppv: 1.6, ecpm: 0.72, delta:  +1.4, ecpmHist: [0.71,0.71,0.72,0.71,0.72,0.72,0.72] },
-      { name: "Direct / Other", total:  28910, uv: 22440, ppv: 1.4, ecpm: 0.61, delta: -15.2, ecpmHist: [0.72,0.70,0.68,0.66,0.64,0.62,0.61] },
+      { name: "Tubetraffic",    total: 154320, revenue: 185.18, uv: 98410, ppv: 2.5, ecpm: 1.20, delta:  +4.2, ecpmHist: [1.10,1.12,1.15,1.18,1.17,1.19,1.20] },
+      { name: "ExoClick",       total: 102800, revenue:  97.66, uv: 71550, ppv: 2.1, ecpm: 0.95, delta:  -8.5, ecpmHist: [1.05,1.04,1.02,1.00,0.99,0.97,0.95] },
+      { name: "Push.house",     total:  82540, revenue:  86.67, uv: 60300, ppv: 2.3, ecpm: 1.05, delta: +12.1, ecpmHist: [0.90,0.93,0.96,0.99,1.01,1.03,1.05] },
+      { name: "JuicyAds",       total:  61220, revenue:  47.75, uv: 45120, ppv: 1.8, ecpm: 0.78, delta:  -3.4, ecpmHist: [0.82,0.81,0.80,0.79,0.79,0.78,0.78] },
+      { name: "TrafficStars",   total:  47300, revenue:  34.06, uv: 35770, ppv: 1.6, ecpm: 0.72, delta:  +1.4, ecpmHist: [0.71,0.71,0.72,0.71,0.72,0.72,0.72] },
+      { name: "Direct / Other", total:  28910, revenue:  17.64, uv: 22440, ppv: 1.4, ecpm: 0.61, delta: -15.2, ecpmHist: [0.72,0.70,0.68,0.66,0.64,0.62,0.61] },
     ];
 
     /* Websites — 7d roll-up. Each website expands to its spots.
@@ -1624,9 +1626,10 @@
       return `<tr>
         <td class="name">${r.name}</td>
         <td class="num">${num(r.total)}</td>
+        <td class="num headline">${usd(r.revenue)}</td>
         <td class="num">${num(r.uv)}</td>
         <td class="num">${r.ppv.toFixed(1)}</td>
-        <td class="num headline">${usd(r.ecpm)}</td>
+        <td class="num">${usd(r.ecpm)}</td>
         <td class="num">${deltaPill(r.delta)}</td>
         <td class="trend" data-tip="${trendTip(r.ecpmHist, true)}">${sparkline(r.ecpmHist, 80, 24)}</td>
       </tr>`;
@@ -1663,7 +1666,7 @@
     wireChartTabs();
     applyView();
     byDateSortable = makeSortable("byDateTable", getByDateForCurrentMetric, rowByDate, "total", "desc");
-    makeSortable("tsTable", trafficSources, rowTS, "total", "desc");
+    makeSortable("tsTable", trafficSources, rowTS, "revenue", "desc");
     const wsSortable = makeSortable("wsTable", getFilteredWebsites, rowWS, "revenue", "desc");
 
     /* Expand/collapse single website → spots */
