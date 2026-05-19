@@ -541,6 +541,22 @@
       margin-right: 6px;
     }
 
+    /* ---------- Fixed column widths for Websites / Spots
+       Prevents column shift when a row is expanded into spots,
+       whose names ("spot-XXXX · description") are wider than
+       website domains. ---------- */
+    #wsTable { table-layout: fixed; }
+    #wsTable th, #wsTable td {
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    #wsTable th:nth-child(1), #wsTable td:nth-child(1) { width: 34%; }  /* Website / Spot name */
+    #wsTable th:nth-child(2), #wsTable td:nth-child(2) { width: 13%; }  /* Total imp.        */
+    #wsTable th:nth-child(3), #wsTable td:nth-child(3) { width: 14%; }  /* Revenue $         */
+    #wsTable th:nth-child(4), #wsTable td:nth-child(4) { width: 11%; }  /* eCPM              */
+    #wsTable th:nth-child(5), #wsTable td:nth-child(5) { width: 12%; }  /* Δ%                */
+    #wsTable th:nth-child(6), #wsTable td:nth-child(6) { width: 16%; }  /* Trend             */
+
     /* ---------- Two-column row ---------- */
     .two-col {
       display: grid;
