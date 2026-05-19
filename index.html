@@ -335,6 +335,23 @@
       flex-wrap: wrap;
       padding: 14px 20px 12px;
     }
+    .toolbar-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    #viewToggle button {
+      padding: 7px 10px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+    #viewToggle button svg { display: block; }
+    .table-view {
+      border-top: 1px solid var(--border);
+    }
+    .table-view[hidden] { display: none; }
     .seg {
       display: inline-flex;
       border: 1px solid #dcdfe6;
@@ -496,6 +513,33 @@
       font-weight: 600;
     }
     td .sparkline { display: inline-block; vertical-align: middle; }
+
+    /* ---------- Expandable rows ---------- */
+    tr.parent-row td.name { cursor: pointer; user-select: none; }
+    tr.parent-row .chevron {
+      display: inline-block;
+      width: 14px;
+      color: var(--text-3);
+      transition: transform 0.15s;
+      margin-right: 4px;
+    }
+    tr.parent-row.expanded .chevron { transform: rotate(90deg); color: var(--text); }
+    tr.child-row td {
+      background: #fafbfc;
+      font-size: 12px;
+      color: var(--text-2);
+      padding-top: 9px;
+      padding-bottom: 9px;
+    }
+    tr.child-row td.name {
+      padding-left: 36px;
+      font-weight: 400;
+    }
+    tr.child-row td.name::before {
+      content: "↳";
+      color: var(--text-3);
+      margin-right: 6px;
+    }
 
     /* ---------- Two-column row ---------- */
     .two-col {
@@ -761,11 +805,17 @@
               <button data-metric="requests"                   data-tip="Number of ad requests sent to networks (some return empty)" data-tip-pos="bottom">Requests</button>
               <button data-metric="ecpm"                       data-tip="Effective CPM — average revenue per 1,000 impressions" data-tip-pos="bottom">eCPM</button>
             </div>
-            <div class="seg" id="periodTabs">
-              <button data-period="realtime"              data-tip="Live · last 60 minutes, minute-by-minute" data-tip-pos="bottom"><span class="live-dot"></span>Real time</button>
-              <button data-period="24h"    class="active" data-tip="Last 24 hours · hourly granularity"       data-tip-pos="bottom">24h</button>
-              <button data-period="7d"                    data-tip="Last 7 days · daily granularity"           data-tip-pos="bottom">7d</button>
-              <button data-period="30d"                   data-tip="Last 30 days · daily granularity"          data-tip-pos="bottom">30d</button>
+            <div class="toolbar-right">
+              <div class="seg" id="periodTabs">
+                <button data-period="realtime"              data-tip="Live · last 60 minutes, minute-by-minute" data-tip-pos="bottom"><span class="live-dot"></span>Real time</button>
+                <button data-period="24h"    class="active" data-tip="Last 24 hours · hourly granularity"       data-tip-pos="bottom">24h</button>
+                <button data-period="7d"                    data-tip="Last 7 days · daily granularity"           data-tip-pos="bottom">7d</button>
+                <button data-period="30d"                   data-tip="Last 30 days · daily granularity"          data-tip-pos="bottom">30d</button>
+              </div>
+              <div class="seg" id="viewToggle">
+                <button data-view="chart" class="active" data-tip="Chart view · stacked area over time"   data-tip-pos="bottom" aria-label="Chart"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"><path d="M4 19V5"/><path d="M4 19h16"/><path d="M7 15l3-4 3 3 5-7"/></svg></button>
+                <button data-view="table"                data-tip="Table view · daily breakdown by format" data-tip-pos="bottom" aria-label="Table"><svg viewBox="0 0 24 24" width="14" height="14" stroke="currentColor" fill="none" stroke-width="2" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 10h18M9 4v16"/></svg></button>
+              </div>
             </div>
           </div>
           <div class="chart-wrap" id="chartWrap">
@@ -773,15 +823,8 @@
             <div class="chart-tooltip" id="chartTooltip"></div>
           </div>
           <div class="legend" id="legend"></div>
-        </section>
-
-        <!-- ===== 3. Revenue by date/format (kept per #118) + Δ column ===== -->
-        <section class="card">
-          <div class="section-head">
-            <h2>Revenue by date/format<i class="info-i" data-tip="Daily revenue broken down by ad format.&#10;Hover any column header for that format's definition." data-tip-pos="bottom">i</i></h2>
-            <span class="sub">Last 10 days · click headers to sort</span>
-          </div>
-          <table class="el-table" id="byDateTable">
+          <div class="table-view" id="tableWrap" hidden>
+            <table class="el-table" id="byDateTable">
             <thead>
               <tr>
                 <th data-key="date" data-tip="Calendar day (UTC) · click to sort">Date <span class="unit">UTC</span> <span class="sort">↕</span></th>
@@ -798,6 +841,7 @@
             </thead>
             <tbody id="byDateBody"></tbody>
           </table>
+          </div>
         </section>
 
         <!-- ===== 4 + 5. Traffic Sources & Websites (NEW per #118), side by side ===== -->
@@ -825,8 +869,8 @@
 
           <section class="card">
             <div class="section-head">
-              <h2>Revenue by Websites<span class="new-flag">NEW</span><i class="info-i" data-tip="Which of your websites brings how much money.&#10;Headline metric: Revenue ($).&#10;eCPM shows efficiency." data-tip-pos="bottom">i</i></h2>
-              <span class="sub">Last 7 days · headline = Revenue</span>
+              <h2>Revenue by Websites / Spots<span class="new-flag">NEW</span><i class="info-i" data-tip="Which of your websites brings how much money.&#10;Click a website to expand into its spots.&#10;Headline metric: Revenue ($)." data-tip-pos="bottom">i</i></h2>
+              <span class="sub">Last 7 days · click website to expand spots</span>
             </div>
             <table class="el-table" id="wsTable">
               <thead>
@@ -932,14 +976,54 @@
       { name: "Direct / Other", total:  28910, uv: 22440, ppv: 1.4, ecpm: 0.61, delta: -15.2, ecpmHist: [0.72,0.70,0.68,0.66,0.64,0.62,0.61] },
     ];
 
-    /* Websites — 7d roll-up. revHist = 7 daily revenue points. */
+    /* Websites — 7d roll-up. revHist = 7 daily revenue points.
+       Each website expands to its spots (sub-rows). */
     const websites = [
-      { name: "some.porn",          total: 152400, revenue: 168.40, ecpm: 1.10, delta:  +6.8, revHist: [148,152,158,160,164,166,168] },
-      { name: "eporner-mirror.com", total: 121780, revenue: 134.20, ecpm: 1.10, delta:  -4.1, revHist: [142,140,139,138,136,135,134] },
-      { name: "tubemax.example",    total:  98650, revenue:  82.15, ecpm: 0.83, delta:  +9.4, revHist: [72,74,76,78,80,81,82] },
-      { name: "xclips.example",     total:  72310, revenue:  58.90, ecpm: 0.81, delta:  -1.2, revHist: [60,60,59,59,59,59,58.9] },
-      { name: "hubcdn.example",     total:  41220, revenue:  29.74, ecpm: 0.72, delta: -18.5, revHist: [36,35,34,33,32,30,29.7] },
+      {
+        name: "some.porn", total: 152400, revenue: 168.40, ecpm: 1.10, delta: +6.8,
+        revHist: [148,152,158,160,164,166,168],
+        spots: [
+          { name: "spot-2841 · main-popunder",   total: 78200, revenue: 92.50, ecpm: 1.18, delta:  +9.1, revHist: [80,82,85,88,90,91,92] },
+          { name: "spot-2842 · video-preroll",   total: 41500, revenue: 48.20, ecpm: 1.16, delta:  +5.4, revHist: [44,45,46,47,47,48,48] },
+          { name: "spot-2843 · sidebar-banner",  total: 32700, revenue: 27.70, ecpm: 0.85, delta:  -1.2, revHist: [28,28,28,28,28,28,28] },
+        ],
+      },
+      {
+        name: "eporner-mirror.com", total: 121780, revenue: 134.20, ecpm: 1.10, delta: -4.1,
+        revHist: [142,140,139,138,136,135,134],
+        spots: [
+          { name: "spot-3110 · popunder",        total: 70200, revenue: 80.40, ecpm: 1.15, delta: -3.2, revHist: [84,83,82,81,81,80,80] },
+          { name: "spot-3111 · in-page push",    total: 51580, revenue: 53.80, ecpm: 1.04, delta: -5.6, revHist: [58,57,56,55,55,54,54] },
+        ],
+      },
+      {
+        name: "tubemax.example", total: 98650, revenue: 82.15, ecpm: 0.83, delta: +9.4,
+        revHist: [72,74,76,78,80,81,82],
+        spots: [
+          { name: "spot-4001 · popunder",        total: 60100, revenue: 55.20, ecpm: 0.92, delta: +12.8, revHist: [48,50,52,53,54,55,55] },
+          { name: "spot-4002 · interstitial",    total: 22300, revenue: 17.80, ecpm: 0.80, delta:  +6.2, revHist: [16,16,17,17,17,18,18] },
+          { name: "spot-4003 · banner",          total: 16250, revenue:  9.15, ecpm: 0.56, delta:  +2.1, revHist: [9,9,9,9,9,9,9.1] },
+        ],
+      },
+      {
+        name: "xclips.example", total: 72310, revenue: 58.90, ecpm: 0.81, delta: -1.2,
+        revHist: [60,60,59,59,59,59,58.9],
+        spots: [
+          { name: "spot-5202 · popunder",        total: 48100, revenue: 40.20, ecpm: 0.84, delta:  -0.8, revHist: [41,41,40,40,40,40,40] },
+          { name: "spot-5203 · slider",          total: 24210, revenue: 18.70, ecpm: 0.77, delta:  -2.0, revHist: [19,19,19,19,19,19,19] },
+        ],
+      },
+      {
+        name: "hubcdn.example", total: 41220, revenue: 29.74, ecpm: 0.72, delta: -18.5,
+        revHist: [36,35,34,33,32,30,29.7],
+        spots: [
+          { name: "spot-6011 · popunder",        total: 27800, revenue: 20.30, ecpm: 0.73, delta: -19.4, revHist: [25,24,23,22,22,21,20] },
+          { name: "spot-6012 · in-page push",    total: 13420, revenue:  9.44, ecpm: 0.70, delta: -16.4, revHist: [11,11,11,10,10,9.5,9.4] },
+        ],
+      },
     ];
+    /* expanded state by website name */
+    const wsExpanded = new Set();
 
     /* Alerts — example issues to show alerts strip */
     const alerts = [
@@ -1031,7 +1115,8 @@
     ============================================================= */
     const chartState = {
       metric: "revenue",     // revenue | impressions | requests | ecpm
-      period: "24h",         // 24h | 7d | 30d | custom
+      period: "24h",         // realtime | 24h | 7d | 30d
+      view: "chart",         // chart | table
       hidden: new Set(),     // format keys hidden by legend
     };
 
@@ -1242,10 +1327,22 @@
     let realtimeTimer = null;
     function setRealtimeAutoRefresh() {
       if (realtimeTimer) { clearInterval(realtimeTimer); realtimeTimer = null; }
-      if (chartState.period === "realtime") {
+      if (chartState.period === "realtime" && chartState.view === "chart") {
         realtimeTimer = setInterval(drawChart, 4000);
       }
     }
+    function applyView() {
+      const isChart = chartState.view === "chart";
+      document.getElementById("chartWrap").style.display = isChart ? "block" : "none";
+      document.getElementById("legend").style.display    = isChart ? "flex"  : "none";
+      const tw = document.getElementById("tableWrap");
+      if (isChart) { tw.setAttribute("hidden", ""); } else { tw.removeAttribute("hidden"); }
+      document.querySelectorAll("#viewToggle button").forEach(b => {
+        b.classList.toggle("active", b.dataset.view === chartState.view);
+      });
+      setRealtimeAutoRefresh();
+    }
+    let byDateSortable = null;
     function wireChartTabs() {
       document.querySelectorAll("#metricTabs button").forEach(b => {
         b.addEventListener("click", () => {
@@ -1253,6 +1350,7 @@
           b.classList.add("active");
           chartState.metric = b.dataset.metric;
           drawChart();
+          if (byDateSortable) byDateSortable.refresh();
         });
       });
       document.querySelectorAll("#periodTabs button").forEach(b => {
@@ -1264,16 +1362,27 @@
           setRealtimeAutoRefresh();
         });
       });
+      document.querySelectorAll("#viewToggle button").forEach(b => {
+        b.addEventListener("click", () => {
+          chartState.view = b.dataset.view;
+          applyView();
+        });
+      });
     }
 
     /* =============================================================
        SORTABLE TABLES
+       Accepts either an array or a getter function for data. The
+       renderRow callback may return one string or an array of strings
+       (used for expandable parent + child rows).
     ============================================================= */
-    function makeSortable(tableId, data, renderRow, defaultKey, defaultDir) {
+    function makeSortable(tableId, dataOrFn, renderRow, defaultKey, defaultDir) {
       const tbl = document.getElementById(tableId);
       const tbody = tbl.querySelector("tbody");
+      const getData = typeof dataOrFn === "function" ? dataOrFn : (() => dataOrFn);
       const state = { key: defaultKey, dir: defaultDir || "desc" };
       function render() {
+        const data = getData();
         const sorted = data.slice().sort((a, b) => {
           const av = a[state.key], bv = b[state.key];
           if (typeof av === "number" && typeof bv === "number") {
@@ -1283,7 +1392,10 @@
             ? String(av).localeCompare(String(bv))
             : String(bv).localeCompare(String(av));
         });
-        tbody.innerHTML = sorted.map(renderRow).join("");
+        tbody.innerHTML = sorted.map(r => {
+          const out = renderRow(r);
+          return Array.isArray(out) ? out.join("") : out;
+        }).join("");
         tbl.querySelectorAll("thead th").forEach(th => {
           th.classList.remove("sorted");
           const span = th.querySelector(".sort");
@@ -1307,11 +1419,10 @@
         });
       });
       render();
+      return { refresh: render };
     }
 
-    /* Render rows */
-    const fmtCell = v => v == null ? '<span style="color:var(--text-3)">—</span>' : usd(v);
-
+    /* ----- Generic formatters ----- */
     function deltaPill(v) {
       if (v == null) return `<span class="delta-pill flat">—</span>`;
       const absVal = Math.abs(v).toFixed(1);
@@ -1327,17 +1438,64 @@
       return `7-day trend: ${fmt(first)} → ${fmt(last)} (${ch >= 0 ? "+" : ""}${ch.toFixed(1)}%)`;
     }
 
+    /* ----- Metric-aware byDate transformation -----
+       The same daily byDate data is reshaped on the fly for the
+       currently selected metric (revenue / impressions / requests / eCPM). */
+    const ECPM_BY_FMT = { banner: 1.10, pop: 0.55, invideo: 1.25, slider: 0.95, inter: 0, ipp: 0.35, out: 0.80 };
+    function transformByDate(row, metric) {
+      const fmts = ["banner","pop","invideo","slider","inter","ipp","out"];
+      const out = { date: row.date };
+      if (metric === "ecpm") {
+        // Pseudo-daily eCPM per format with stable seeded noise
+        let seed = row.date.split("-").reduce((a, b) => a + (+b), 0);
+        const rnd = () => { seed = (seed * 9301 + 49297) % 233280; return seed / 233280; };
+        let count = 0, sum = 0;
+        fmts.forEach(k => {
+          const base = ECPM_BY_FMT[k] || 0;
+          const v = base > 0 ? Math.max(0, base + (rnd() - 0.5) * 0.12) : null;
+          out[k] = v;
+          if (v) { sum += v; count++; }
+        });
+        out.total = count ? sum / count : 0;
+      } else {
+        const mul = metric === "impressions" ? 11000 : metric === "requests" ? 14000 : 1;
+        let total = 0;
+        fmts.forEach(k => {
+          const v = row[k] == null ? null : row[k] * mul;
+          out[k] = v;
+          if (v != null) total += v;
+        });
+        out.total = total;
+      }
+      return out;
+    }
+    function getByDateForCurrentMetric() {
+      const rows = byDate.map(r => transformByDate(r, chartState.metric));
+      rows.forEach((r, i) => {
+        const next = rows[i + 1];
+        r.dod = next && next.total ? ((r.total - next.total) / next.total) * 100 : null;
+      });
+      return rows;
+    }
+
+    /* ----- Metric-aware cell formatter ----- */
+    function fmtByDateCell(v) {
+      if (v == null) return '<span style="color:var(--text-3)">—</span>';
+      const m = chartState.metric;
+      if (m === "revenue" || m === "ecpm") return "$" + Number(v).toFixed(2);
+      return Math.round(v).toLocaleString("en-US");
+    }
     function rowByDate(r) {
       return `<tr>
         <td>${r.date}</td>
-        <td class="num">${fmtCell(r.banner)}</td>
-        <td class="num">${fmtCell(r.pop)}</td>
-        <td class="num">${fmtCell(r.invideo)}</td>
-        <td class="num">${fmtCell(r.slider)}</td>
-        <td class="num">${fmtCell(r.inter)}</td>
-        <td class="num">${fmtCell(r.ipp)}</td>
-        <td class="num">${fmtCell(r.out)}</td>
-        <td class="num headline">${usd(r.total)}</td>
+        <td class="num">${fmtByDateCell(r.banner)}</td>
+        <td class="num">${fmtByDateCell(r.pop)}</td>
+        <td class="num">${fmtByDateCell(r.invideo)}</td>
+        <td class="num">${fmtByDateCell(r.slider)}</td>
+        <td class="num">${fmtByDateCell(r.inter)}</td>
+        <td class="num">${fmtByDateCell(r.ipp)}</td>
+        <td class="num">${fmtByDateCell(r.out)}</td>
+        <td class="num headline">${fmtByDateCell(r.total)}</td>
         <td class="num">${deltaPill(r.dod)}</td>
       </tr>`;
     }
@@ -1354,15 +1512,27 @@
       </tr>`;
     }
 
+    /* Websites table — parent rows are expandable into per-spot rows */
     function rowWS(r) {
-      return `<tr>
-        <td class="name">${r.name}</td>
+      const isOpen = wsExpanded.has(r.name);
+      const parent = `<tr class="parent-row ${isOpen ? "expanded" : ""}" data-ws="${r.name}">
+        <td class="name"><span class="chevron">›</span>${r.name}</td>
         <td class="num">${num(r.total)}</td>
         <td class="num headline">${usd(r.revenue)}</td>
         <td class="num">${usd(r.ecpm)}</td>
         <td class="num">${deltaPill(r.delta)}</td>
         <td class="trend" data-tip="${trendTip(r.revHist, true)}">${sparkline(r.revHist, 80, 24)}</td>
       </tr>`;
+      if (!isOpen) return parent;
+      const children = (r.spots || []).map(s => `<tr class="child-row">
+        <td class="name">${s.name}</td>
+        <td class="num">${num(s.total)}</td>
+        <td class="num">${usd(s.revenue)}</td>
+        <td class="num">${usd(s.ecpm)}</td>
+        <td class="num">${deltaPill(s.delta)}</td>
+        <td class="trend" data-tip="${trendTip(s.revHist, true)}">${sparkline(s.revHist, 80, 24)}</td>
+      </tr>`).join("");
+      return parent + children;
     }
 
     /* =============================================================
@@ -1373,9 +1543,22 @@
     renderLegend();
     drawChart();
     wireChartTabs();
-    makeSortable("byDateTable", byDate, rowByDate, "total", "desc");
-    makeSortable("tsTable",     trafficSources, rowTS, "total", "desc");
-    makeSortable("wsTable",     websites, rowWS, "revenue", "desc");
+    applyView();
+    byDateSortable = makeSortable("byDateTable", getByDateForCurrentMetric, rowByDate, "total", "desc");
+    makeSortable("tsTable", trafficSources, rowTS, "total", "desc");
+    const wsSortable = makeSortable("wsTable", websites, rowWS, "revenue", "desc");
+
+    /* Expand/collapse websites → spots */
+    document.getElementById("wsTable").addEventListener("click", e => {
+      const parent = e.target.closest("tr.parent-row");
+      if (!parent) return;
+      // Only the name cell triggers expand (so sorting via header is unaffected)
+      const nameCell = e.target.closest("td.name");
+      if (!nameCell) return;
+      const ws = parent.dataset.ws;
+      if (wsExpanded.has(ws)) wsExpanded.delete(ws); else wsExpanded.add(ws);
+      wsSortable.refresh();
+    });
 
     /* Redraw chart on resize */
     let resizeT;
