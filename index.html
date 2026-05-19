@@ -414,7 +414,7 @@
     }
     table.el-table thead th {
       text-align: left;
-      padding: 10px 16px;
+      padding: 10px 16px 24px;
       font-weight: 500;
       color: var(--text-2);
       background: #fafafa;
@@ -423,16 +423,31 @@
       cursor: pointer;
       user-select: none;
       white-space: nowrap;
+      position: relative;
+      vertical-align: top;
     }
     table.el-table thead th.num { text-align: right; }
+    table.el-table thead th:hover { background: #f3f4f6; }
     table.el-table thead th .sort {
       display: inline-block;
-      margin-left: 4px;
+      width: 16px;
+      height: 16px;
+      line-height: 16px;
+      text-align: center;
+      vertical-align: middle;
+      margin-left: 6px;
       color: var(--text-3);
-      font-size: 9px;
-      opacity: 0.6;
+      font-size: 11px;
+      font-weight: 700;
+      border-radius: 3px;
+      background: transparent;
+      transition: background 0.15s, color 0.15s;
     }
-    table.el-table thead th.sorted .sort { opacity: 1; color: var(--text); }
+    table.el-table thead th:hover .sort { color: var(--text-2); background: #eaecef; }
+    table.el-table thead th.sorted .sort {
+      color: #fff;
+      background: var(--success);
+    }
     table.el-table tbody td {
       padding: 11px 16px;
       border-bottom: 1px solid #f0f2f5;
@@ -620,19 +635,24 @@
       font-weight: 600;
       color: var(--text);
     }
-    /* Unit annotations under column titles */
-    th .unit {
+    /* Unit annotations — anchored to bottom of th, out of normal flow
+       so the sort indicator stays inline with the column title */
+    table.el-table thead th .unit {
+      position: absolute;
+      left: 16px;
+      right: auto;
+      bottom: 6px;
       display: block;
       font-size: 10px;
       font-weight: 400;
       color: var(--text-3);
       letter-spacing: 0.3px;
       text-transform: none;
-      margin-top: 1px;
+      white-space: nowrap;
     }
-    th { vertical-align: top; }
-    th .sort {
-      margin-left: 4px;
+    table.el-table thead th.num .unit {
+      left: auto;
+      right: 16px;
     }
     /* Cursor for column tips */
     th[data-tip] { cursor: help; }
