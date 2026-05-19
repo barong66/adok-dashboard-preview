@@ -27,12 +27,25 @@
       --text: #303133;
       --text-2: #606266;
       --text-3: #909399;
-      --success: #67c23a;     /* green (active buttons) */
+      --success: #67c23a;
       --success-hover: #5daf34;
-      --danger: #f56c6c;      /* red (negative deltas) */
-      --primary: #409eff;     /* element-plus default blue (links in table) */
+      --warn: #e6a23c;
+      --warn-bg: #fdf6ec;
+      --danger: #f56c6c;
+      --danger-bg: #fef0f0;
+      --primary: #409eff;
       --row-stripe: #fafafa;
       --row-hover: #f5f7fa;
+
+      /* Ad format palette (shared between chart, tables, top movers) */
+      --c-popunder: #b252d4;
+      --c-banner:   #409eff;
+      --c-invideo:  #67c23a;
+      --c-slider:   #e6a23c;
+      --c-ipp:      #f56c6c;
+      --c-inter:    #14b8a6;
+      --c-out:      #a78bfa;
+      --c-direct:   #f59e0b;
     }
 
     /* ---------- App shell ---------- */
@@ -58,9 +71,8 @@
       font-size: 22px;
       letter-spacing: 0.5px;
     }
-    .sidebar .logo .adok { color: #1d1d1f; }
-    .sidebar .logo .dot  { color: #1d1d1f; }
-    .sidebar .logo .ai   { color: #7e57c2; }
+    .sidebar .logo .adok, .sidebar .logo .dot { color: #1d1d1f; }
+    .sidebar .logo .ai { color: #7e57c2; }
     .sidebar nav { padding: 4px 0 12px; flex: 1; }
     .sidebar .group-title {
       text-transform: uppercase;
@@ -133,20 +145,11 @@
       padding: 0 20px;
       gap: 16px;
     }
-    .topbar .burger {
-      width: 18px;
-      height: 18px;
-      cursor: pointer;
-      color: var(--text-2);
-    }
-    .topbar .crumb {
-      color: var(--text-2);
-      font-size: 14px;
-    }
+    .topbar .burger { width: 18px; height: 18px; cursor: pointer; color: var(--text-2); }
+    .topbar .crumb { color: var(--text-2); font-size: 14px; }
     .topbar .spacer { flex: 1; }
     .topbar .search {
-      width: 220px;
-      height: 30px;
+      width: 220px; height: 30px;
       border: 1px solid var(--border);
       border-radius: 4px;
       padding: 0 10px;
@@ -155,29 +158,54 @@
       background: var(--white);
     }
     .topbar .icon-btn {
-      width: 30px;
-      height: 30px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
+      width: 30px; height: 30px;
+      display: inline-flex; align-items: center; justify-content: center;
       color: var(--text-3);
       cursor: pointer;
     }
     .topbar .balance {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--text);
-      font-size: 14px;
+      display: inline-flex; align-items: center; gap: 6px;
+      color: var(--text); font-size: 14px;
     }
     .topbar .balance svg { color: var(--success); }
     .topbar .user {
-      display: inline-flex;
+      display: inline-flex; align-items: center; gap: 4px;
+      color: var(--text); font-size: 14px; cursor: pointer;
+    }
+
+    /* ---------- Alerts strip ---------- */
+    .alerts-strip {
+      display: flex;
       align-items: center;
-      gap: 4px;
-      color: var(--text);
-      font-size: 14px;
+      gap: 12px;
+      padding: 10px 20px;
+      background: var(--warn-bg);
+      border-bottom: 1px solid #f5dab1;
+      color: #8a4b14;
+      font-size: 13px;
+    }
+    .alerts-strip.urgent {
+      background: var(--danger-bg);
+      border-bottom-color: #fbc4c4;
+      color: #8a1f1f;
+    }
+    .alerts-strip .icon { font-size: 16px; line-height: 1; }
+    .alerts-strip .summary b { font-weight: 600; }
+    .alerts-strip .summary .sep { color: rgba(0,0,0,0.25); margin: 0 6px; }
+    .alerts-strip .spacer { flex: 1; }
+    .alerts-strip .review {
+      background: transparent;
+      border: 1px solid currentColor;
+      color: inherit;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 12px;
       cursor: pointer;
+    }
+    .alerts-strip .dismiss {
+      background: transparent; border: none; color: inherit;
+      cursor: pointer; font-size: 16px; line-height: 1;
+      opacity: 0.5;
     }
 
     /* ---------- Main ---------- */
@@ -188,12 +216,12 @@
       margin: 0 0 16px;
       color: var(--text);
     }
-
     .card {
       background: var(--white);
       border: 1px solid var(--border);
       border-radius: 16px;
       margin-bottom: 16px;
+      overflow: hidden;
     }
     .new-flag {
       display: inline-flex;
@@ -208,52 +236,104 @@
       vertical-align: middle;
       margin-left: 8px;
     }
+    .section-head {
+      padding: 14px 20px 12px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 500;
+      color: var(--text);
+    }
+    .section-head .sub {
+      color: var(--text-3);
+      font-size: 12px;
+    }
 
-    /* ---------- Income header (6 cards) ---------- */
-    .incomes {
+    /* ---------- Income header (4 cards) ---------- */
+    .incomes-row {
       display: grid;
-      grid-template-columns: repeat(6, 1fr);
-      padding: 18px 0;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      padding: 0;
     }
-    .incomes .col {
-      padding: 4px 28px;
-      border-left: 1px solid #dddfe6;
+    .income-card {
+      position: relative;
+      padding: 18px 20px 18px 22px;
+      border-left: 1px solid var(--border);
     }
-    .incomes .col:first-child { border-left: none; }
-    .incomes .col .label {
+    .income-card:first-child { border-left: none; }
+    .income-card .stripe {
+      position: absolute;
+      left: 0; top: 18px; bottom: 18px;
+      width: 4px;
+      border-radius: 0 2px 2px 0;
+      background: var(--text-3);
+    }
+    .income-card .stripe.up { background: var(--success); }
+    .income-card .stripe.down { background: var(--warn); }
+    .income-card .stripe.deep-down { background: var(--danger); }
+    .income-card .label {
       font-size: 13px;
       font-weight: 500;
       color: var(--text);
+      margin-bottom: 6px;
       white-space: nowrap;
-      margin-bottom: 4px;
     }
-    .incomes .col .value {
-      font-size: 22px;
+    .income-card .row {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      justify-content: space-between;
+    }
+    .income-card .value {
+      font-size: 24px;
       font-weight: 400;
       color: var(--text);
       white-space: nowrap;
+      line-height: 1.1;
     }
-    .incomes .col .delta {
+    .income-card .delta {
       font-size: 13px;
-      margin-left: 4px;
-      font-weight: 400;
+      font-weight: 500;
+      white-space: nowrap;
     }
-    .grow { color: var(--success); }
-    .fall { color: var(--danger); }
-
+    .income-card .delta.up { color: var(--success); }
+    .income-card .delta.down { color: var(--warn); }
+    .income-card .delta.deep-down { color: var(--danger); }
+    .income-card .ctx {
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--text-3);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .income-card .spark {
+      margin-top: 8px;
+      width: 100%;
+      height: 28px;
+      display: block;
+    }
     @media (max-width: 1200px) {
-      .incomes { grid-template-columns: repeat(3, 1fr); }
-      .incomes .col { border-left: none; padding: 12px 20px; }
+      .incomes-row { grid-template-columns: repeat(2, 1fr); }
+      .income-card { border-left: none; border-top: 1px solid var(--border); }
+      .income-card:nth-child(-n+2) { border-top: none; }
     }
 
-    /* ---------- Activity chart card ---------- */
-    .chart-card { padding: 14px 16px 18px; position: relative; }
+    /* ---------- Revenue chart ---------- */
     .chart-toolbar {
       display: flex;
+      align-items: center;
       justify-content: space-between;
-      gap: 8px;
-      margin-bottom: 12px;
+      gap: 12px;
       flex-wrap: wrap;
+      padding: 14px 20px 12px;
     }
     .seg {
       display: inline-flex;
@@ -266,12 +346,13 @@
       border: none;
       border-left: 1px solid #dcdfe6;
       color: var(--text-2);
-      padding: 6px 12px;
+      padding: 7px 14px;
       font-size: 12px;
       cursor: pointer;
       line-height: 1;
     }
     .seg button:first-child { border-left: none; }
+    .seg button:hover:not(.active) { background: #f5f7fa; }
     .seg button.active {
       background: var(--success);
       color: #fff;
@@ -280,50 +361,52 @@
     .chart-wrap {
       position: relative;
       height: 360px;
+      padding: 0 20px;
     }
     .chart-wrap svg { display: block; width: 100%; height: 100%; }
-    .scrubber {
+    .chart-tooltip {
       position: absolute;
-      top: 4px;
-      left: 0;
-      right: 0;
-      height: 36px;
-      background: #f5f5f5;
-      border-radius: 4px;
-      overflow: hidden;
-    }
-    .chart-zoom-btn {
-      position: absolute;
-      top: 50px;
-      right: 14px;
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: var(--primary);
+      pointer-events: none;
+      background: rgba(48,49,51,0.95);
       color: #fff;
+      padding: 8px 10px;
+      border-radius: 6px;
+      font-size: 12px;
+      line-height: 1.4;
+      opacity: 0;
+      transition: opacity 0.1s;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+      white-space: nowrap;
+      z-index: 5;
+    }
+    .chart-tooltip .tt-row { display: flex; align-items: center; gap: 6px; }
+    .chart-tooltip .tt-dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; }
+    .chart-tooltip .tt-total { border-top: 1px solid rgba(255,255,255,0.2); padding-top: 4px; margin-top: 4px; font-weight: 600; }
+    .legend {
+      display: flex; flex-wrap: wrap;
+      gap: 6px;
+      padding: 12px 20px 18px;
+    }
+    .legend .chip {
       display: inline-flex;
       align-items: center;
-      justify-content: center;
+      gap: 6px;
+      background: #f5f5f5;
+      border-radius: 12px;
+      padding: 4px 10px;
+      font-size: 12px;
       cursor: pointer;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+      color: var(--text-2);
+      user-select: none;
+      border: 1px solid transparent;
     }
-    .y-label {
-      position: absolute;
-      left: 8px;
-      top: 50%;
-      transform: rotate(-90deg) translateX(-50%);
-      color: var(--text-3);
-      font-size: 11px;
+    .legend .chip:hover { background: #ebeef5; }
+    .legend .chip.off { opacity: 0.4; }
+    .legend .chip .dot {
+      width: 10px; height: 10px; border-radius: 50%;
     }
 
-    /* ---------- Tables (Element Plus look) ---------- */
-    .section-head {
-      padding: 14px 16px 10px;
-      font-size: 18px;
-      font-weight: 400;
-      color: var(--text);
-      line-height: 1.2;
-    }
+    /* ---------- Tables ---------- */
     table.el-table {
       width: 100%;
       border-collapse: collapse;
@@ -331,53 +414,115 @@
     }
     table.el-table thead th {
       text-align: left;
-      padding: 10px 14px;
-      font-weight: 400;
+      padding: 10px 16px;
+      font-weight: 500;
       color: var(--text-2);
-      background: var(--white);
+      background: #fafafa;
       border-bottom: 1px solid var(--border);
-      font-size: 13px;
+      font-size: 12px;
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
     }
+    table.el-table thead th.num { text-align: right; }
+    table.el-table thead th .sort {
+      display: inline-block;
+      margin-left: 4px;
+      color: var(--text-3);
+      font-size: 9px;
+      opacity: 0.6;
+    }
+    table.el-table thead th.sorted .sort { opacity: 1; color: var(--text); }
     table.el-table tbody td {
-      padding: 12px 14px;
+      padding: 11px 16px;
       border-bottom: 1px solid #f0f2f5;
       color: var(--text);
+      font-variant-numeric: tabular-nums;
     }
+    table.el-table tbody td.name { font-weight: 500; }
+    table.el-table tbody td.num { text-align: right; }
+    table.el-table tbody td.delta-up { color: var(--success); }
+    table.el-table tbody td.delta-down { color: var(--danger); }
     table.el-table tbody tr:last-child td { border-bottom: none; }
     table.el-table tbody tr:hover { background: var(--row-hover); }
     table.el-table tbody tr.total td {
       background: #fafafa;
       font-weight: 600;
     }
-    table.el-table td.link { color: var(--primary); }
-    .table-foot {
-      padding: 14px 16px;
-      display: flex;
-      gap: 8px;
-      align-items: center;
-      flex-wrap: wrap;
-    }
-    .btn {
-      padding: 8px 16px;
-      border-radius: 4px;
-      font-size: 13px;
-      font-weight: 500;
-      border: 1px solid var(--success);
-      background: var(--success);
-      color: #fff;
-      cursor: pointer;
-      line-height: 1;
-    }
-    .btn:hover { background: var(--success-hover); border-color: var(--success-hover); }
+    td .sparkline { display: inline-block; vertical-align: middle; }
 
-    /* ---------- Footer dev note ---------- */
+    /* ---------- Two-column row ---------- */
+    .two-col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      margin-bottom: 16px;
+    }
+    .two-col .card { margin-bottom: 0; }
+    @media (max-width: 1100px) {
+      .two-col { grid-template-columns: 1fr; }
+    }
+
+    /* ---------- Top movers ---------- */
+    .movers-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0;
+    }
+    .movers-col {
+      padding: 14px 20px 20px;
+      border-left: 1px solid var(--border);
+    }
+    .movers-col:first-child { border-left: none; }
+    .movers-col h3 {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 600;
+      letter-spacing: 0.4px;
+      text-transform: uppercase;
+      color: var(--text-2);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .movers-col.growers h3 { color: var(--success); }
+    .movers-col.decliners h3 { color: var(--danger); }
+    .mover-row {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 12px;
+      align-items: center;
+      padding: 10px 0;
+      border-bottom: 1px dashed #f0f2f5;
+    }
+    .mover-row:last-child { border-bottom: none; }
+    .mover-row .name { font-weight: 500; }
+    .mover-row .d-abs { color: var(--text-2); font-size: 13px; font-variant-numeric: tabular-nums; }
+    .mover-row .d-pct {
+      font-weight: 600;
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+      min-width: 56px;
+      text-align: right;
+    }
+    .mover-row.up .d-pct { color: var(--success); }
+    .mover-row.down .d-pct { color: var(--danger); }
+
+    /* ---------- Dev footer ---------- */
     .devnote {
       text-align: center;
       color: var(--text-3);
       font-size: 12px;
-      padding: 16px 0 8px;
+      padding: 8px 0 16px;
     }
     .devnote a { color: var(--text-3); text-decoration: underline; }
+
+    /* Income hover tooltip — native title is fine but we want richer */
+    .income-card { cursor: default; }
+
+    /* Custom scrollbar polish (optional) */
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+    ::-webkit-scrollbar-thumb { background: #dcdfe6; border-radius: 4px; }
   </style>
 </head>
 <body>
@@ -395,60 +540,24 @@
         </a>
 
         <div class="group-title">traffic</div>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>
-          Websites
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>
-          Traffic sources
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>
-          Spots
-        </a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M12 2C8 2 5 5 5 9c0 5 7 13 7 13s7-8 7-13c0-4-3-7-7-7z"/><circle cx="12" cy="9" r="2.5"/></svg>Websites</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M5 12h14"/><path d="M12 5l7 7-7 7"/></svg>Traffic sources</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3"/></svg>Spots</a>
 
         <div class="group-title">advertising</div>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>
-          Rotation
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16l-2 12H6L4 7z"/><path d="M9 7V5a3 3 0 1 1 6 0v2"/></svg>
-          Marketplace
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
-          Deals
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>
-          Mediakits
-        </a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-3-6.7"/><path d="M21 4v5h-5"/></svg>Rotation</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M4 7h16l-2 12H6L4 7z"/><path d="M9 7V5a3 3 0 1 1 6 0v2"/></svg>Marketplace</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>Deals</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 3v18"/></svg>Mediakits</a>
 
         <div class="group-title">extra tools</div>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
-          Reports
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M9.94 14.06l4.12-4.12"/><path d="M5 10c0-3 2-5 5-5s5 2 5 5"/><path d="M15 14c0 3-2 5-5 5s-5-2-5-5"/></svg>
-          Anti Ad Block
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/><path d="M1 12h3M20 12h3M12 1v3M12 20v3"/></svg>
-          Ad Scans
-        </a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>Reports</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M9.94 14.06l4.12-4.12"/><path d="M5 10c0-3 2-5 5-5s5 2 5 5"/><path d="M15 14c0 3-2 5-5 5s-5-2-5-5"/></svg>Anti Ad Block</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M9 9h6v6H9z"/></svg>Ad Scans</a>
 
         <div class="group-title">more</div>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M6 9V5h12v4"/><path d="M6 13a6 6 0 0 0 12 0"/><path d="M9 22h6"/></svg>
-          Referrals
-        </a>
-        <a class="item" href="#">
-          <svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="M7 12l3 3 7-7"/></svg>
-          Support telegram
-        </a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M6 9V5h12v4"/><path d="M6 13a6 6 0 0 0 12 0"/><path d="M9 22h6"/></svg>Referrals</a>
+        <a class="item" href="#"><svg class="ic" viewBox="0 0 24 24"><path d="M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/><path d="M7 12l3 3 7-7"/></svg>Support telegram</a>
       </nav>
       <div class="extras">
         <div class="row"><svg class="arrow" viewBox="0 0 24 24" fill="currentColor"><path d="M5 12h12l-4-4 1.4-1.4L21 13l-6.6 6.4L13 18l4-4H5z"/></svg> Frozen:<b>NO</b></div>
@@ -465,278 +574,710 @@
         <span class="crumb">Activity</span>
         <div class="spacer"></div>
         <input class="search" type="text" placeholder="Search...">
-        <span class="icon-btn">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 1 1 4.4 1.6c-.5.5-1.4.8-1.9 1.4-.3.4-.5 1-.5 2"/><path d="M12 17h.01"/></svg>
-        </span>
-        <span class="balance">
-          <svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>
-          $246.62
-        </span>
-        <span class="user">
-          <svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>
-          55294: networks
-          <svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
-        </span>
+        <span class="icon-btn"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.5 9a2.5 2.5 0 1 1 4.4 1.6c-.5.5-1.4.8-1.9 1.4-.3.4-.5 1-.5 2"/><path d="M12 17h.01"/></svg></span>
+        <span class="balance"><svg viewBox="0 0 24 24" width="18" height="18" stroke="currentColor" fill="none" stroke-width="2"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/></svg>$246.62</span>
+        <span class="user"><svg viewBox="0 0 24 24" width="16" height="16" stroke="currentColor" fill="none" stroke-width="2"><circle cx="12" cy="8" r="4"/><path d="M4 20a8 8 0 0 1 16 0"/></svg>55294: networks<svg viewBox="0 0 24 24" width="12" height="12" stroke="currentColor" fill="none" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></span>
       </header>
+
+      <!-- Alerts strip (conditional) -->
+      <div id="alertsStrip"></div>
 
       <!-- Main content -->
       <main class="main">
         <h1 class="page-title">Dashboard</h1>
 
-        <!-- ===== 1. Income header (kept per #118) ===== -->
-        <section class="card incomes" id="incomes"></section>
+        <!-- ===== 1. Income header — 4 cards + sparklines + context ===== -->
+        <section class="card incomes-row" id="incomes"></section>
 
-        <!-- ===== 2. Activity chart (kept per #118) ===== -->
-        <section class="card chart-card">
+        <!-- ===== 2. Revenue chart — $ default ===== -->
+        <section class="card">
           <div class="chart-toolbar">
-            <div class="seg">
-              <button class="active">Impressions</button>
-              <button>Requests</button>
+            <div class="seg" id="metricTabs">
+              <button data-metric="revenue" class="active">Revenue&nbsp;$</button>
+              <button data-metric="impressions">Impressions</button>
+              <button data-metric="requests">Requests</button>
+              <button data-metric="ecpm">eCPM</button>
             </div>
-            <div class="seg" style="flex-wrap:wrap">
-              <button class="active">All&nbsp;types</button>
-              <button>Popunder</button>
-              <button>Banner</button>
-              <button>In-video</button>
-              <button>Slider</button>
-              <button>In-Page Push</button>
-              <button>Interstitial</button>
-              <button>OutStream</button>
-              <button>Direct Link</button>
+            <div class="seg" id="periodTabs">
+              <button data-period="24h" class="active">24h</button>
+              <button data-period="7d">7d</button>
+              <button data-period="30d">30d</button>
+              <button data-period="custom">Custom</button>
             </div>
           </div>
-          <div class="chart-wrap" id="chart">
-            <span class="y-label">impressions</span>
-            <div class="scrubber" id="scrubber"></div>
-            <div class="chart-zoom-btn">−</div>
+          <div class="chart-wrap" id="chartWrap">
             <svg id="chartSvg" preserveAspectRatio="none" viewBox="0 0 1000 360"></svg>
+            <div class="chart-tooltip" id="chartTooltip"></div>
           </div>
+          <div class="legend" id="legend"></div>
         </section>
 
-        <!-- ===== 3. Revenue by date/format (KEPT per #118 — "доходы в разрезе рекламного формата") ===== -->
+        <!-- ===== 3. Revenue by date/format (kept per #118) + Δ column ===== -->
         <section class="card">
-          <div class="section-head">Revenue by date/format</div>
-          <table class="el-table">
+          <div class="section-head">
+            <h2>Revenue by date/format</h2>
+            <span class="sub">Last 14 days</span>
+          </div>
+          <table class="el-table" id="byDateTable">
             <thead>
               <tr>
-                <th>Date</th>
-                <th>Banner</th>
-                <th>Popunder</th>
-                <th>In-Video</th>
-                <th>Slider</th>
-                <th>Interstitial</th>
-                <th>In-Page Push</th>
-                <th>Outstream</th>
-                <th>Total</th>
+                <th data-key="date">Date <span class="sort">↕</span></th>
+                <th class="num" data-key="banner">Banner <span class="sort">↕</span></th>
+                <th class="num" data-key="pop">Popunder <span class="sort">↕</span></th>
+                <th class="num" data-key="invideo">In-Video <span class="sort">↕</span></th>
+                <th class="num" data-key="slider">Slider <span class="sort">↕</span></th>
+                <th class="num" data-key="inter">Interstitial <span class="sort">↕</span></th>
+                <th class="num" data-key="ipp">In-Page Push <span class="sort">↕</span></th>
+                <th class="num" data-key="out">Outstream <span class="sort">↕</span></th>
+                <th class="num sorted" data-key="total">Total <span class="sort">↓</span></th>
+                <th class="num" data-key="dod">vs Prev <span class="sort">↕</span></th>
               </tr>
             </thead>
             <tbody id="byDateBody"></tbody>
           </table>
         </section>
 
-        <!-- ===== 4. NEW per #118: Revenue by Traffic Sources ===== -->
-        <section class="card">
-          <div class="section-head">Revenue by Traffic Sources<span class="new-flag">NEW</span></div>
-          <table class="el-table">
-            <thead>
-              <tr>
-                <th>Traffic Source</th>
-                <th>Total</th>
-                <th>UV</th>
-                <th>PPV</th>
-                <th>eCPM</th>
-              </tr>
-            </thead>
-            <tbody id="tsBody"></tbody>
-          </table>
-        </section>
+        <!-- ===== 4 + 5. Traffic Sources & Websites (NEW per #118), side by side ===== -->
+        <div class="two-col">
+          <section class="card">
+            <div class="section-head">
+              <h2>Revenue by Traffic Sources<span class="new-flag">NEW</span></h2>
+              <span class="sub">Last 7 days · sortable</span>
+            </div>
+            <table class="el-table" id="tsTable">
+              <thead>
+                <tr>
+                  <th data-key="name">Source <span class="sort">↕</span></th>
+                  <th class="num sorted" data-key="total">Total <span class="sort">↓</span></th>
+                  <th class="num" data-key="uv">UV <span class="sort">↕</span></th>
+                  <th class="num" data-key="ppv">PPV <span class="sort">↕</span></th>
+                  <th class="num" data-key="ecpm">eCPM <span class="sort">↕</span></th>
+                  <th class="num" data-key="delta">Δ% <span class="sort">↕</span></th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody id="tsBody"></tbody>
+            </table>
+          </section>
 
-        <!-- ===== 5. NEW per #118: Revenue by Websites ===== -->
+          <section class="card">
+            <div class="section-head">
+              <h2>Revenue by Websites<span class="new-flag">NEW</span></h2>
+              <span class="sub">Last 7 days · sortable</span>
+            </div>
+            <table class="el-table" id="wsTable">
+              <thead>
+                <tr>
+                  <th data-key="name">Website <span class="sort">↕</span></th>
+                  <th class="num" data-key="total">Total <span class="sort">↕</span></th>
+                  <th class="num sorted" data-key="revenue">Revenue <span class="sort">↓</span></th>
+                  <th class="num" data-key="ecpm">eCPM <span class="sort">↕</span></th>
+                  <th class="num" data-key="delta">Δ% <span class="sort">↕</span></th>
+                  <th>Trend</th>
+                </tr>
+              </thead>
+              <tbody id="wsBody"></tbody>
+            </table>
+          </section>
+        </div>
+
+        <!-- ===== 6. Top movers ===== -->
         <section class="card">
-          <div class="section-head">Revenue by Websites<span class="new-flag">NEW</span></div>
-          <table class="el-table">
-            <thead>
-              <tr>
-                <th>Website</th>
-                <th>Total</th>
-                <th>Revenue</th>
-                <th>eCPM</th>
-              </tr>
-            </thead>
-            <tbody id="wsBody"></tbody>
-          </table>
+          <div class="section-head">
+            <h2>Top movers<span class="new-flag">NEW</span></h2>
+            <div style="display:flex; gap:8px;">
+              <div class="seg" id="moversDim">
+                <button data-dim="website" class="active">Website</button>
+                <button data-dim="source">Traffic source</button>
+                <button data-dim="format">Format</button>
+              </div>
+              <div class="seg" id="moversPeriod">
+                <button data-mp="day" class="active">vs Yesterday</button>
+                <button data-mp="week">vs Last week</button>
+              </div>
+            </div>
+          </div>
+          <div class="movers-grid">
+            <div class="movers-col growers">
+              <h3>▲ Top growers</h3>
+              <div id="growersList"></div>
+            </div>
+            <div class="movers-col decliners">
+              <h3>▼ Top decliners</h3>
+              <div id="declinersList"></div>
+            </div>
+          </div>
         </section>
 
         <p class="devnote">
-          Preview · pixel-aligned to current Adok.ai dashboard ·
-          changes per <a href="https://gitlab.as12as.com/asg/support/-/work_items/118" target="_blank" rel="noopener">support#118</a> ·
-          sample data, not production
+          Preview · cockpit redesign on top of <a href="https://gitlab.as12as.com/asg/support/-/work_items/118" target="_blank" rel="noopener">support#118</a> · sample data only
         </p>
       </main>
     </div>
   </div>
 
   <script>
-    /* ============ DATA (from screenshot) ============ */
+    /* =============================================================
+       FORMAT PALETTE (shared)
+    ============================================================= */
+    const FORMATS = [
+      { key: "popunder", label: "Popunder",     color: "var(--c-popunder)" },
+      { key: "banner",   label: "Banner",       color: "var(--c-banner)"   },
+      { key: "invideo",  label: "In-Video",     color: "var(--c-invideo)"  },
+      { key: "slider",   label: "Slider",       color: "var(--c-slider)"   },
+      { key: "ipp",      label: "In-Page Push", color: "var(--c-ipp)"      },
+      { key: "inter",    label: "Interstitial", color: "var(--c-inter)"    },
+      { key: "out",      label: "OutStream",    color: "var(--c-out)"      },
+      { key: "direct",   label: "Direct Link",  color: "var(--c-direct)"   },
+    ];
+
+    /* =============================================================
+       SAMPLE DATA
+    ============================================================= */
+
+    /* Income header — 4 cards (Today / Yesterday / This month / Last 30d).
+       Numbers grounded in user's live screenshot for Today/Yesterday/30d. */
     const incomes = [
-      { label: "Today's income",          value: 142.22 },
-      { label: "Yesterday's Income",      value: 312.35,  diff: -6 },
-      { label: "7 days' income",          value: 2339.18, diff: -9 },
-      { label: "This month's Income",     value: 6277.33, diff: -6 },
-      { label: "Previous month's Income", value: 10112.52, diff: -16 },
-      { label: "Last 30 days' Income",    value: 9927.06,  diff: -16 },
+      {
+        label: "Today's income",
+        value: 142.22,
+        delta: 5.2,
+        context: "vs same weekday avg $135.10",
+        spark: [110,115,108,120,118,125,130,128,135,138,140,142],
+      },
+      {
+        label: "Yesterday's income",
+        value: 312.35,
+        delta: -6.0,
+        context: "vs day before $332.40",
+        spark: [340,335,330,328,325,322,320,318,316,314,313,312],
+      },
+      {
+        label: "This month's income",
+        value: 6277.33,
+        delta: -6.0,
+        context: "same days last month $6680.00",
+        spark: [180,210,240,260,290,310,330,360,380,410,440,470,500,540,580,612],
+      },
+      {
+        label: "Last 30 days' income",
+        value: 9927.06,
+        delta: -16.0,
+        context: "prev 30 days $11819.00",
+        spark: [430,420,410,395,388,375,370,360,345,338,330,322,318,312,308,305,302,300,298,295,290,288,285,282,278,275,272,270,268,265],
+      },
     ];
 
+    /* Revenue by date/format — extends the table from the live screenshot */
     const byDate = [
-      { date: "2026-05-19", banner: 21.9,  pop: 96.83,  invideo: 0,    slider: 15.04, inter: 0, ipp: 1.89, out: 6.56,  total: 142.22 },
-      { date: "2026-05-18", banner: 46.54, pop: 216.36, invideo: 8.67, slider: 26.94, inter: 0, ipp: 2.81, out: 11.04, total: 312.36 },
-      { date: "2026-05-17", banner: 50.21, pop: 228.30, invideo: 9.15, slider: 29.04, inter: 0, ipp: 3.20, out: 12.39, total: 332.29 },
-      { date: "2026-05-16", banner: 47.84, pop: 221.18, invideo: 8.97, slider: 27.86, inter: 0, ipp: 3.58, out: 12.14, total: 321.57 },
-      { date: "2026-05-15", banner: 50.18, pop: 229.83, invideo: 8.50, slider: 28.73, inter: 0, ipp: 3.72, out: 12.84, total: 333.80 },
-      { date: "2026-05-14", banner: 52.03, pop: 247.95, invideo: 8.55, slider: 30.05, inter: 0, ipp: 5.06, out: 13.73, total: 357.37 },
+      { date: "2026-05-19", banner: 21.90, pop: 96.83,  invideo: 0,    slider: 15.04, inter: 0, ipp: 1.89,  out: 6.56,  total: 142.22 },
+      { date: "2026-05-18", banner: 46.54, pop: 216.36, invideo: 8.67, slider: 26.94, inter: 0, ipp: 2.81,  out: 11.04, total: 312.36 },
+      { date: "2026-05-17", banner: 50.21, pop: 228.30, invideo: 9.15, slider: 29.04, inter: 0, ipp: 3.20,  out: 12.39, total: 332.29 },
+      { date: "2026-05-16", banner: 47.84, pop: 221.18, invideo: 8.97, slider: 27.86, inter: 0, ipp: 3.58,  out: 12.14, total: 321.57 },
+      { date: "2026-05-15", banner: 50.18, pop: 229.83, invideo: 8.50, slider: 28.73, inter: 0, ipp: 3.72,  out: 12.84, total: 333.80 },
+      { date: "2026-05-14", banner: 52.03, pop: 247.95, invideo: 8.55, slider: 30.05, inter: 0, ipp: 5.06,  out: 13.73, total: 357.37 },
+      { date: "2026-05-13", banner: 51.40, pop: 244.50, invideo: 8.40, slider: 29.60, inter: 0, ipp: 4.80,  out: 13.50, total: 352.20 },
+      { date: "2026-05-12", banner: 49.20, pop: 235.10, invideo: 8.10, slider: 28.40, inter: 0, ipp: 4.50,  out: 12.90, total: 338.20 },
+      { date: "2026-05-11", banner: 50.80, pop: 240.70, invideo: 8.30, slider: 29.20, inter: 0, ipp: 4.65,  out: 13.20, total: 346.85 },
+      { date: "2026-05-10", banner: 48.10, pop: 230.20, invideo: 7.90, slider: 27.80, inter: 0, ipp: 4.30,  out: 12.50, total: 330.80 },
     ];
+    /* compute day-over-day delta on Total for byDate */
+    byDate.forEach((r, i) => {
+      const next = byDate[i + 1];
+      r.dod = next ? ((r.total - next.total) / next.total) * 100 : null;
+    });
 
-    /* NEW tables per #118 — sample rows */
+    /* Traffic Sources — 7d roll-up. ecpmHist = 7 daily eCPM points. */
     const trafficSources = [
-      { name: "Tubetraffic",    total: 154320, uv:  98410, ppv: 2.5, ecpm: 1.20 },
-      { name: "ExoClick",       total: 102800, uv:  71550, ppv: 2.1, ecpm: 0.95 },
-      { name: "Push.house",     total:  82540, uv:  60300, ppv: 2.3, ecpm: 1.05 },
-      { name: "JuicyAds",       total:  61220, uv:  45120, ppv: 1.8, ecpm: 0.78 },
-      { name: "TrafficStars",   total:  47300, uv:  35770, ppv: 1.6, ecpm: 0.72 },
-      { name: "Direct / Other", total:  28910, uv:  22440, ppv: 1.4, ecpm: 0.61 },
-    ];
-    const websites = [
-      { name: "some.porn",          total: 152400, revenue: 168.40, ecpm: 1.10 },
-      { name: "eporner-mirror.com", total: 121780, revenue: 134.20, ecpm: 1.10 },
-      { name: "tubemax.example",    total:  98650, revenue:  82.15, ecpm: 0.83 },
-      { name: "xclips.example",     total:  72310, revenue:  58.90, ecpm: 0.81 },
-      { name: "hubcdn.example",     total:  41220, revenue:  29.74, ecpm: 0.72 },
+      { name: "Tubetraffic",    total: 154320, uv: 98410, ppv: 2.5, ecpm: 1.20, delta:  +4.2, ecpmHist: [1.10,1.12,1.15,1.18,1.17,1.19,1.20] },
+      { name: "ExoClick",       total: 102800, uv: 71550, ppv: 2.1, ecpm: 0.95, delta:  -8.5, ecpmHist: [1.05,1.04,1.02,1.00,0.99,0.97,0.95] },
+      { name: "Push.house",     total:  82540, uv: 60300, ppv: 2.3, ecpm: 1.05, delta: +12.1, ecpmHist: [0.90,0.93,0.96,0.99,1.01,1.03,1.05] },
+      { name: "JuicyAds",       total:  61220, uv: 45120, ppv: 1.8, ecpm: 0.78, delta:  -3.4, ecpmHist: [0.82,0.81,0.80,0.79,0.79,0.78,0.78] },
+      { name: "TrafficStars",   total:  47300, uv: 35770, ppv: 1.6, ecpm: 0.72, delta:  +1.4, ecpmHist: [0.71,0.71,0.72,0.71,0.72,0.72,0.72] },
+      { name: "Direct / Other", total:  28910, uv: 22440, ppv: 1.4, ecpm: 0.61, delta: -15.2, ecpmHist: [0.72,0.70,0.68,0.66,0.64,0.62,0.61] },
     ];
 
-    /* ============ FORMATTERS ============ */
+    /* Websites — 7d roll-up. revHist = 7 daily revenue points. */
+    const websites = [
+      { name: "some.porn",          total: 152400, revenue: 168.40, ecpm: 1.10, delta:  +6.8, revHist: [148,152,158,160,164,166,168] },
+      { name: "eporner-mirror.com", total: 121780, revenue: 134.20, ecpm: 1.10, delta:  -4.1, revHist: [142,140,139,138,136,135,134] },
+      { name: "tubemax.example",    total:  98650, revenue:  82.15, ecpm: 0.83, delta:  +9.4, revHist: [72,74,76,78,80,81,82] },
+      { name: "xclips.example",     total:  72310, revenue:  58.90, ecpm: 0.81, delta:  -1.2, revHist: [60,60,59,59,59,59,58.9] },
+      { name: "hubcdn.example",     total:  41220, revenue:  29.74, ecpm: 0.72, delta: -18.5, revHist: [36,35,34,33,32,30,29.7] },
+    ];
+
+    /* Alerts — example issues to show alerts strip */
+    const alerts = [
+      { level: "warn", text: "<b>2 anti-adblock domains</b> down (Norton, Avast)" },
+      { level: "warn", text: "<b>1 creative</b> pending review" },
+      { level: "warn", text: "Invoice <b>#A-2143</b> voided — re-issue available" },
+    ];
+
+    /* =============================================================
+       HELPERS
+    ============================================================= */
     const usd = v => "$" + Number(v).toLocaleString("en-US", {minimumFractionDigits: 2, maximumFractionDigits: 2});
     const num = v => Number(v).toLocaleString("en-US");
+    const pct = v => (v >= 0 ? "+" : "") + v.toFixed(1) + "%";
+    const stripeClass = d => d == null ? "" : (d <= -15 ? "deep-down" : d <= -5 ? "down" : d >= 1 ? "up" : "");
+    const deltaClass  = d => d == null ? "" : (d <= -15 ? "deep-down" : d < 0 ? "down" : "up");
 
-    /* ============ INCOME HEADER ============ */
-    document.getElementById("incomes").innerHTML = incomes.map(i => {
-      let delta = "";
-      if (typeof i.diff === "number") {
-        const cls = i.diff >= 0 ? "grow" : "fall";
-        const sign = i.diff >= 0 ? "↑" : "↓";
-        delta = `<span class="delta ${cls}">${sign} ${i.diff}%</span>`;
-      }
-      return `<div class="col">
-        <div class="label">${i.label}</div>
-        <div class="value">$${i.value.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2})}${delta}</div>
-      </div>`;
-    }).join("");
-
-    /* ============ CHART (SVG area) ============ */
-    function genSeries(n, base, amp, drift) {
-      const pts = [];
-      let v = base;
-      for (let i = 0; i < n; i++) {
-        v += (Math.random() - 0.5) * amp + (drift / n);
-        pts.push(Math.max(800, Math.min(7000, v)));
-      }
-      return pts;
-    }
-    function pathFor(values, w, h, maxY) {
-      const stepX = w / (values.length - 1);
-      let d = `M 0 ${h - (values[0] / maxY) * h}`;
+    function sparkline(values, width = 90, height = 28, color = "#909399") {
+      if (!values || values.length < 2) return "";
+      const min = Math.min(...values), max = Math.max(...values);
+      const range = max - min || 1;
+      const stepX = width / (values.length - 1);
+      let d = "";
       values.forEach((v, i) => {
-        d += ` L ${(i * stepX).toFixed(1)} ${(h - (v / maxY) * h).toFixed(1)}`;
+        const x = (i * stepX).toFixed(1);
+        const y = (height - 2 - ((v - min) / range) * (height - 4)).toFixed(1);
+        d += (i === 0 ? "M" : " L") + x + " " + y;
       });
-      d += ` L ${w} ${h} L 0 ${h} Z`;
-      return d;
+      const last = values[values.length - 1];
+      const lastX = width.toFixed(1);
+      const lastY = (height - 2 - ((last - min) / range) * (height - 4)).toFixed(1);
+      const trend = values[values.length - 1] - values[0];
+      const dotColor = trend >= 0 ? "#67c23a" : "#f56c6c";
+      return `<svg class="sparkline" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+        <path d="${d}" fill="none" stroke="${color}" stroke-width="1.4" stroke-linejoin="round" stroke-linecap="round"/>
+        <circle cx="${lastX}" cy="${lastY}" r="2.2" fill="${dotColor}"/>
+      </svg>`;
     }
-    (function drawChart() {
+
+    /* =============================================================
+       ALERTS STRIP
+    ============================================================= */
+    function renderAlerts() {
+      const root = document.getElementById("alertsStrip");
+      if (!alerts || alerts.length === 0) { root.innerHTML = ""; return; }
+      const urgent = alerts.some(a => a.level === "urgent");
+      const items = alerts.slice(0, 3).map(a => a.text).join('<span class="sep">·</span>');
+      root.innerHTML = `<div class="alerts-strip ${urgent ? 'urgent' : ''}">
+        <span class="icon">⚠</span>
+        <span class="summary"><b>${alerts.length} issues need attention</b> — ${items}</span>
+        <span class="spacer"></span>
+        <button class="review">Review →</button>
+        <button class="dismiss" title="Dismiss for today">×</button>
+      </div>`;
+      root.querySelector(".dismiss").addEventListener("click", () => { root.innerHTML = ""; });
+    }
+
+    /* =============================================================
+       INCOME HEADER — 4 cards
+    ============================================================= */
+    function renderIncomes() {
+      const root = document.getElementById("incomes");
+      root.innerHTML = incomes.map(i => {
+        const sc = stripeClass(i.delta);
+        const dc = deltaClass(i.delta);
+        const arrow = i.delta >= 0 ? "↑" : "↓";
+        return `<div class="income-card" title="${i.label}: ${usd(i.value)} (${pct(i.delta)}) — ${i.context}">
+          <span class="stripe ${sc}"></span>
+          <div class="label">${i.label}</div>
+          <div class="row">
+            <div class="value">${usd(i.value)}</div>
+            <div class="delta ${dc}">${arrow} ${Math.abs(i.delta).toFixed(1)}%</div>
+          </div>
+          <div class="ctx">${i.context}</div>
+          ${sparkline(i.spark, 200, 28)}
+        </div>`;
+      }).join("");
+    }
+
+    /* =============================================================
+       REVENUE CHART (stacked area by ad format)
+    ============================================================= */
+    const chartState = {
+      metric: "revenue",     // revenue | impressions | requests | ecpm
+      period: "24h",         // 24h | 7d | 30d | custom
+      hidden: new Set(),     // format keys hidden by legend
+    };
+
+    /* Build time-series data on the fly based on period */
+    function makeSeries(period, metric) {
+      const n = period === "24h" ? 96 : period === "7d" ? 168 : period === "30d" ? 120 : 96;
+      /* Per-format average daily revenue (USD, derived from byDate avg) */
+      const baseDailyRev = {
+        popunder: 230, banner: 50, invideo: 8.5, slider: 28, ipp: 4, inter: 0, out: 13, direct: 2,
+      };
+      /* Multipliers for metric */
+      const metricMul = {
+        revenue:     1,
+        impressions: 11000,   /* ~1k imps per $0.09 eCPM */
+        requests:    14000,
+        ecpm:        1,       /* eCPM is per format average */
+      };
+      const ecpmAvg = {
+        popunder: 0.55, banner: 1.10, invideo: 1.25, slider: 0.95, ipp: 0.35, inter: 0, out: 0.80, direct: 0.30,
+      };
+      const out = {};
+      FORMATS.forEach(fmt => {
+        const arr = [];
+        const periodScale =
+          period === "24h" ? 1/24 :
+          period === "7d"  ? 1 :
+          period === "30d" ? 1 : 1/24;
+        const baseUnit =
+          metric === "revenue"     ? baseDailyRev[fmt.key] * periodScale :
+          metric === "impressions" ? baseDailyRev[fmt.key] * periodScale * metricMul.impressions :
+          metric === "requests"    ? baseDailyRev[fmt.key] * periodScale * metricMul.requests :
+          ecpmAvg[fmt.key];
+        let v = baseUnit;
+        const amp = baseUnit * 0.35;
+        for (let i = 0; i < n; i++) {
+          // sinusoidal time-of-day shape + noise
+          const hour = (i / n) * 24;
+          const tod = 0.7 + 0.5 * Math.sin((hour - 7) * Math.PI / 12);
+          const noise = 1 + (Math.random() - 0.5) * 0.4;
+          arr.push(Math.max(0, baseUnit * tod * noise));
+        }
+        out[fmt.key] = arr;
+      });
+      return { n, series: out };
+    }
+
+    function drawChart() {
       const svg = document.getElementById("chartSvg");
       const W = 1000, H = 360;
-      const padTop = 50, padBottom = 30, padLeft = 36;
+      const padTop = 16, padBottom = 30, padLeft = 56, padRight = 12;
       const innerH = H - padTop - padBottom;
-      const innerW = W - padLeft - 8;
+      const innerW = W - padLeft - padRight;
 
-      const n = 220;
-      const seriesA = genSeries(n, 3500, 700, 1800);   // purple
-      const seriesB = genSeries(n, 3800, 700, 1700);   // gray
+      const { n, series } = makeSeries(chartState.period, chartState.metric);
+      const visibleFormats = FORMATS.filter(f => !chartState.hidden.has(f.key));
 
-      const yTicks = [0, 2000, 4000, 6000, 8000];
-      const yMax = 8000;
+      /* Stack: at each x, sum of visible formats */
+      const stacked = [];
+      let yMax = 0;
+      for (let i = 0; i < n; i++) {
+        let acc = 0;
+        const point = { x: i };
+        visibleFormats.forEach(f => {
+          const v = series[f.key][i];
+          point[f.key] = { y0: acc, y1: acc + v };
+          acc += v;
+        });
+        point.total = acc;
+        yMax = Math.max(yMax, acc);
+        stacked.push(point);
+      }
+      /* round yMax up to nice number */
+      const niceMax = Math.pow(10, Math.floor(Math.log10(yMax)));
+      yMax = Math.ceil(yMax / niceMax) * niceMax;
+      if (yMax === 0) yMax = 1;
 
-      let gridLines = "";
-      yTicks.forEach(t => {
-        const y = padTop + innerH - (t / yMax) * innerH;
-        gridLines += `<line x1="${padLeft}" y1="${y.toFixed(1)}" x2="${W - 8}" y2="${y.toFixed(1)}" stroke="#eee" stroke-width="1"/>`;
-        gridLines += `<text x="${padLeft - 6}" y="${(y + 4).toFixed(1)}" font-size="11" fill="#909399" text-anchor="end">${t.toLocaleString("en-US")}</text>`;
-      });
+      /* grid + Y labels */
+      const nTicks = 5;
+      let grid = "";
+      for (let t = 0; t <= nTicks; t++) {
+        const v = (yMax / nTicks) * t;
+        const y = padTop + innerH - (v / yMax) * innerH;
+        grid += `<line x1="${padLeft}" y1="${y.toFixed(1)}" x2="${W - padRight}" y2="${y.toFixed(1)}" stroke="#eef0f3" stroke-width="1"/>`;
+        const label = chartState.metric === "revenue" || chartState.metric === "ecpm"
+          ? "$" + v.toFixed(chartState.metric === "ecpm" ? 2 : 0)
+          : v.toLocaleString("en-US", {maximumFractionDigits: 0});
+        grid += `<text x="${padLeft - 8}" y="${(y + 4).toFixed(1)}" font-size="11" fill="#909399" text-anchor="end">${label}</text>`;
+      }
 
-      const xLabels = ["06:00","09:00","12:00","15:00"];
+      /* X labels by period */
+      const xLabelsCfg = {
+        "24h":    ["00", "04", "08", "12", "16", "20", "24"],
+        "7d":     ["Mon","Tue","Wed","Thu","Fri","Sat","Sun"],
+        "30d":    ["-30d","-25d","-20d","-15d","-10d","-5d","now"],
+        "custom": ["start", "", "", "", "", "", "end"],
+      };
+      const xLabels = xLabelsCfg[chartState.period] || xLabelsCfg["24h"];
       let xAxis = "";
       xLabels.forEach((lab, i) => {
-        const x = padLeft + (innerW * (i + 0.5) / xLabels.length);
+        const x = padLeft + (innerW * i / (xLabels.length - 1));
         xAxis += `<text x="${x.toFixed(1)}" y="${(H - 8).toFixed(1)}" font-size="11" fill="#909399" text-anchor="middle">${lab}</text>`;
       });
 
-      const pA = pathFor(seriesA, innerW, innerH, yMax);
-      const pB = pathFor(seriesB, innerW, innerH, yMax);
+      /* Area paths */
+      const xOf = i => padLeft + (i / (n - 1)) * innerW;
+      const yOf = v => padTop + innerH - (v / yMax) * innerH;
 
-      svg.innerHTML = `
-        <g>${gridLines}</g>
-        <g transform="translate(${padLeft}, ${padTop})">
-          <path d="${pB}" fill="rgba(180, 184, 188, 0.45)" stroke="#b4b8bc" stroke-width="0.6"/>
-          <path d="${pA}" fill="rgba(186, 119, 209, 0.55)" stroke="#b252d4" stroke-width="0.6"/>
-        </g>
-        <g>${xAxis}</g>
-      `;
+      let areas = "";
+      visibleFormats.forEach(f => {
+        let dTop = "";
+        let dBot = "";
+        stacked.forEach((p, i) => {
+          const x = xOf(i).toFixed(2);
+          const yTop = yOf(p[f.key].y1).toFixed(2);
+          const yBot = yOf(p[f.key].y0).toFixed(2);
+          dTop += (i === 0 ? `M ${x} ${yTop}` : ` L ${x} ${yTop}`);
+          dBot += ` L ${x} ${yBot}`;
+        });
+        /* Reverse bottom for closing path */
+        const dBotRev = stacked.slice().reverse().map((p, i) => {
+          const idx = n - 1 - i;
+          const x = xOf(idx).toFixed(2);
+          const yBot = yOf(p[f.key].y0).toFixed(2);
+          return ` L ${x} ${yBot}`;
+        }).join("");
+        const dPath = dTop + dBotRev + " Z";
+        areas += `<path d="${dPath}" fill="${f.color}" fill-opacity="0.85" stroke="none"/>`;
+      });
 
-      /* Scrubber preview (small sparkline + handles) */
-      const scrub = document.getElementById("scrubber");
-      const sm = genSeries(120, 3500, 400, 1200);
-      const sMax = 5000;
-      let sp = `M 0 ${36 - (sm[0]/sMax)*30}`;
-      sm.forEach((v,i)=>{ sp += ` L ${(i*(1000/(sm.length-1))).toFixed(1)} ${(36 - (v/sMax)*30).toFixed(1)}`; });
-      sp += ` L 1000 36 L 0 36 Z`;
-      scrub.innerHTML = `
-        <svg viewBox="0 0 1000 36" preserveAspectRatio="none" style="width:100%;height:100%">
-          <path d="${sp}" fill="rgba(160, 160, 160, 0.35)" stroke="#aaa" stroke-width="0.4"/>
-          <rect x="380" y="0" width="370" height="36" fill="rgba(160,160,160,0.18)"/>
-          <circle cx="380" cy="18" r="9" fill="#bbb" stroke="#fff" stroke-width="2"/>
-          <circle cx="750" cy="18" r="9" fill="#bbb" stroke="#fff" stroke-width="2"/>
-        </svg>
-      `;
-    })();
+      /* Hover hit area + invisible vertical line */
+      const hover = `<rect id="hoverRect" x="${padLeft}" y="${padTop}" width="${innerW}" height="${innerH}" fill="transparent"/>
+                     <line id="hoverLine" x1="0" y1="${padTop}" x2="0" y2="${padTop + innerH}" stroke="rgba(0,0,0,0.25)" stroke-width="1" visibility="hidden"/>`;
 
-    /* ============ TABLES ============ */
-    document.getElementById("byDateBody").innerHTML = byDate.map(r => `
-      <tr>
+      svg.innerHTML = grid + areas + xAxis + hover;
+
+      /* Hover interaction */
+      const wrap = document.getElementById("chartWrap");
+      const tt = document.getElementById("chartTooltip");
+      const hoverLine = svg.querySelector("#hoverLine");
+      const rect = svg.querySelector("#hoverRect");
+
+      rect.addEventListener("mousemove", (e) => {
+        const bbox = svg.getBoundingClientRect();
+        const xPx = e.clientX - bbox.left;
+        const wratio = bbox.width / W;
+        const xSvg = xPx / wratio;
+        const ratio = (xSvg - padLeft) / innerW;
+        const idx = Math.max(0, Math.min(n - 1, Math.round(ratio * (n - 1))));
+        const xSvgSnap = xOf(idx);
+        hoverLine.setAttribute("visibility", "visible");
+        hoverLine.setAttribute("x1", xSvgSnap);
+        hoverLine.setAttribute("x2", xSvgSnap);
+
+        /* Build tooltip rows */
+        const p = stacked[idx];
+        const fmtVal = chartState.metric === "revenue" || chartState.metric === "ecpm"
+          ? v => "$" + v.toFixed(chartState.metric === "ecpm" ? 2 : 2)
+          : v => Math.round(v).toLocaleString("en-US");
+        const rows = visibleFormats.map(f => {
+          const v = p[f.key].y1 - p[f.key].y0;
+          return `<div class="tt-row"><span class="tt-dot" style="background:${f.color}"></span>${f.label}: ${fmtVal(v)}</div>`;
+        }).join("");
+        const total = p.total;
+        tt.innerHTML = rows + `<div class="tt-total">Total: ${fmtVal(total)}</div>`;
+
+        /* Position tooltip */
+        const tooltipX = (xSvgSnap / W) * bbox.width;
+        const containerLeft = wrap.getBoundingClientRect().left;
+        const wrapW = wrap.getBoundingClientRect().width;
+        let leftPx = tooltipX + (bbox.left - containerLeft) + 12;
+        const ttW = tt.offsetWidth || 180;
+        if (leftPx + ttW > wrapW) leftPx = tooltipX + (bbox.left - containerLeft) - ttW - 12;
+        tt.style.left = leftPx + "px";
+        tt.style.top = "20px";
+        tt.style.opacity = "1";
+      });
+      rect.addEventListener("mouseleave", () => {
+        tt.style.opacity = "0";
+        hoverLine.setAttribute("visibility", "hidden");
+      });
+    }
+
+    function renderLegend() {
+      const el = document.getElementById("legend");
+      el.innerHTML = FORMATS.map(f => {
+        const off = chartState.hidden.has(f.key) ? "off" : "";
+        return `<span class="chip ${off}" data-key="${f.key}">
+          <span class="dot" style="background:${f.color}"></span>${f.label}
+        </span>`;
+      }).join("");
+      el.querySelectorAll(".chip").forEach(c => {
+        c.addEventListener("click", () => {
+          const k = c.dataset.key;
+          if (chartState.hidden.has(k)) chartState.hidden.delete(k); else chartState.hidden.add(k);
+          /* prevent hiding all */
+          if (chartState.hidden.size === FORMATS.length) chartState.hidden.delete(k);
+          renderLegend();
+          drawChart();
+        });
+      });
+    }
+
+    function wireChartTabs() {
+      document.querySelectorAll("#metricTabs button").forEach(b => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll("#metricTabs button").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          chartState.metric = b.dataset.metric;
+          drawChart();
+        });
+      });
+      document.querySelectorAll("#periodTabs button").forEach(b => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll("#periodTabs button").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          chartState.period = b.dataset.period;
+          drawChart();
+        });
+      });
+    }
+
+    /* =============================================================
+       SORTABLE TABLES
+    ============================================================= */
+    function makeSortable(tableId, data, renderRow, defaultKey, defaultDir) {
+      const tbl = document.getElementById(tableId);
+      const tbody = tbl.querySelector("tbody");
+      const state = { key: defaultKey, dir: defaultDir || "desc" };
+      function render() {
+        const sorted = data.slice().sort((a, b) => {
+          const av = a[state.key], bv = b[state.key];
+          if (typeof av === "number" && typeof bv === "number") {
+            return state.dir === "asc" ? av - bv : bv - av;
+          }
+          return state.dir === "asc"
+            ? String(av).localeCompare(String(bv))
+            : String(bv).localeCompare(String(av));
+        });
+        tbody.innerHTML = sorted.map(renderRow).join("");
+        tbl.querySelectorAll("thead th").forEach(th => {
+          th.classList.remove("sorted");
+          const span = th.querySelector(".sort");
+          if (span) span.textContent = "↕";
+          if (th.dataset.key === state.key) {
+            th.classList.add("sorted");
+            if (span) span.textContent = state.dir === "asc" ? "↑" : "↓";
+          }
+        });
+      }
+      tbl.querySelectorAll("thead th").forEach(th => {
+        if (!th.dataset.key) return;
+        th.addEventListener("click", () => {
+          if (state.key === th.dataset.key) {
+            state.dir = state.dir === "asc" ? "desc" : "asc";
+          } else {
+            state.key = th.dataset.key;
+            state.dir = "desc";
+          }
+          render();
+        });
+      });
+      render();
+    }
+
+    /* Render rows */
+    const fmtCell = v => v == null ? '<span style="color:var(--text-3)">—</span>' : usd(v);
+
+    function rowByDate(r) {
+      const dodCls = r.dod == null ? "" : r.dod >= 0 ? "delta-up" : "delta-down";
+      const dodTxt = r.dod == null ? "—" : pct(r.dod);
+      return `<tr>
         <td>${r.date}</td>
-        <td>${usd(r.banner)}</td>
-        <td>${usd(r.pop)}</td>
-        <td class="${r.invideo === 0 ? '' : 'link'}">$${r.invideo}</td>
-        <td>${usd(r.slider)}</td>
-        <td>$${r.inter}</td>
-        <td>${usd(r.ipp)}</td>
-        <td>${usd(r.out)}</td>
-        <td>${usd(r.total)}</td>
-      </tr>`).join("");
+        <td class="num">${fmtCell(r.banner)}</td>
+        <td class="num">${fmtCell(r.pop)}</td>
+        <td class="num">${fmtCell(r.invideo)}</td>
+        <td class="num">${fmtCell(r.slider)}</td>
+        <td class="num">${fmtCell(r.inter)}</td>
+        <td class="num">${fmtCell(r.ipp)}</td>
+        <td class="num">${fmtCell(r.out)}</td>
+        <td class="num"><b>${usd(r.total)}</b></td>
+        <td class="num ${dodCls}">${dodTxt}</td>
+      </tr>`;
+    }
 
-    document.getElementById("tsBody").innerHTML = trafficSources.map(t => `
-      <tr>
-        <td>${t.name}</td>
-        <td>${num(t.total)}</td>
-        <td>${num(t.uv)}</td>
-        <td>${t.ppv.toFixed(1)}</td>
-        <td>${usd(t.ecpm)}</td>
-      </tr>`).join("");
+    function rowTS(r) {
+      const cls = r.delta >= 0 ? "delta-up" : "delta-down";
+      return `<tr>
+        <td class="name">${r.name}</td>
+        <td class="num">${num(r.total)}</td>
+        <td class="num">${num(r.uv)}</td>
+        <td class="num">${r.ppv.toFixed(1)}</td>
+        <td class="num">${usd(r.ecpm)}</td>
+        <td class="num ${cls}">${pct(r.delta)}</td>
+        <td>${sparkline(r.ecpmHist, 80, 24)}</td>
+      </tr>`;
+    }
 
-    document.getElementById("wsBody").innerHTML = websites.map(w => `
-      <tr>
-        <td>${w.name}</td>
-        <td>${num(w.total)}</td>
-        <td>${usd(w.revenue)}</td>
-        <td>${usd(w.ecpm)}</td>
-      </tr>`).join("");
+    function rowWS(r) {
+      const cls = r.delta >= 0 ? "delta-up" : "delta-down";
+      return `<tr>
+        <td class="name">${r.name}</td>
+        <td class="num">${num(r.total)}</td>
+        <td class="num">${usd(r.revenue)}</td>
+        <td class="num">${usd(r.ecpm)}</td>
+        <td class="num ${cls}">${pct(r.delta)}</td>
+        <td>${sparkline(r.revHist, 80, 24)}</td>
+      </tr>`;
+    }
+
+    /* =============================================================
+       TOP MOVERS
+    ============================================================= */
+    const moversState = { dim: "website", period: "day" };
+
+    /* Build "movers" data from existing tables. For per-period scaling, scale delta. */
+    function moversData() {
+      const periodScale = moversState.period === "day" ? 0.4 : 1.0; // shrink delta for daily
+      const baseTotal = moversState.dim === "format" ? 100 : 1;
+      const pickFmt = () => FORMATS.slice(0, 7).map(f => ({
+        name: f.label,
+        abs: (Math.random() * 80 + 5),
+        delta: (Math.random() - 0.45) * 60 * periodScale,
+      }));
+      let src;
+      if (moversState.dim === "website") {
+        src = websites.map(w => ({ name: w.name, abs: Math.abs(w.revenue * w.delta / 100), delta: w.delta * periodScale }));
+      } else if (moversState.dim === "source") {
+        src = trafficSources.map(s => ({ name: s.name, abs: Math.abs(s.ecpm * 100 * s.delta / 100), delta: s.delta * periodScale }));
+      } else {
+        src = pickFmt();
+      }
+      /* filter noise: skip items with very small absolute change */
+      src = src.filter(x => Math.abs(x.abs) >= 1);
+      const growers = src.filter(x => x.delta > 0).sort((a, b) => b.delta - a.delta).slice(0, 3);
+      const decliners = src.filter(x => x.delta < 0).sort((a, b) => a.delta - b.delta).slice(0, 3);
+      return { growers, decliners };
+    }
+    function renderMovers() {
+      const { growers, decliners } = moversData();
+      const renderList = (arr, dir) => arr.length === 0
+        ? `<div style="color:var(--text-3); font-size:13px; padding: 8px 0;">No items</div>`
+        : arr.map(x => `<div class="mover-row ${dir}">
+            <div class="name">${x.name}</div>
+            <div class="d-abs">${dir === "up" ? "+" : "−"}${usd(Math.abs(x.abs))}</div>
+            <div class="d-pct">${pct(x.delta)}</div>
+          </div>`).join("");
+      document.getElementById("growersList").innerHTML = renderList(growers, "up");
+      document.getElementById("declinersList").innerHTML = renderList(decliners, "down");
+    }
+    function wireMovers() {
+      document.querySelectorAll("#moversDim button").forEach(b => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll("#moversDim button").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          moversState.dim = b.dataset.dim;
+          renderMovers();
+        });
+      });
+      document.querySelectorAll("#moversPeriod button").forEach(b => {
+        b.addEventListener("click", () => {
+          document.querySelectorAll("#moversPeriod button").forEach(x => x.classList.remove("active"));
+          b.classList.add("active");
+          moversState.period = b.dataset.mp;
+          renderMovers();
+        });
+      });
+    }
+
+    /* =============================================================
+       BOOT
+    ============================================================= */
+    renderAlerts();
+    renderIncomes();
+    renderLegend();
+    drawChart();
+    wireChartTabs();
+    makeSortable("byDateTable", byDate, rowByDate, "total", "desc");
+    makeSortable("tsTable",     trafficSources, rowTS, "total", "desc");
+    makeSortable("wsTable",     websites, rowWS, "revenue", "desc");
+    renderMovers();
+    wireMovers();
+
+    /* Redraw chart on resize */
+    let resizeT;
+    window.addEventListener("resize", () => {
+      clearTimeout(resizeT);
+      resizeT = setTimeout(drawChart, 150);
+    });
   </script>
 </body>
 </html>
